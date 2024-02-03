@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphQL</title>
+</head>
+<body>
+  Позволяет запрашивать именно те данные которые нужны (можно связные), и получить их в одном запросе<br>
+  Есть один эндпоинт для всех запросов, и схема API на стороне сервера<br>
+  <br>
+  <b>Виді запросов:</b><br>
+  Query<br>
+  Mutation<br>
+  Subscription<br>
+  <br>
+  <b>Схема:</b>
+  <pre>type Character {
+    name: String
+    # ... Другие поля
+    friends: [Character]
+  }
+
+  type Query {
+    hero: Character
+  }</pre>
+
+  <b>Запрос:</b>
+
+  <pre>query {
+    hero {
+      name
+      friends {
+        name
+      }
+    }
+  }</pre>
+
+  <b>Ответ:</b>
+
+  <pre>{
+    "data": {
+      "hero": {
+        "name": "RD-D2",
+        "friends": [
+          {
+            "name": "Luke Skywalker"
+          },
+          {
+            "name": "Han Solo"
+          }
+        ]
+      }
+    }
+  }</pre>
+</body>
+</html>
+
+

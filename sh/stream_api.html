@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream API</title>
+</head>
+<body>
+    <b>функциональные инструменты для обработки коллекций данных</b><br>
+    Стрим можно использовать только один раз. Или получиш <b>IllegalStateException:</b> stream has already been operated upon or closed<br>
+    <br>
+    <p style="color: blue;"><b><u>Промежуточные (intermediate) операции:</u></b></p>
+    <b>filter</b>(Predicate predicate): фильтрует стрим<br>
+    <b>map</b>(Function mapper): преобразует стрим, применяя функцию к каждому элементу.<br>
+    <b>flatMap</b>(Function mapper): объединяет все стримы в один.<br>
+    <b>distinct</b>(): возвращает стрим с уникальными элементами.<br>
+    <b>sorted</b>(), sorted(Comparator&lt? super T&gt comparator): возвращает отсортированный стрим.<br>
+    <b>peek</b>(Consumer action): возвращает тот же стрим, выполняя действие над каждым элементом.<br>
+    <b>limit</b>(long maxSize): сокращает стрим до определенного размера.<br>
+    <b>skip</b>(long n): пропускает n-число элементов в стриме.<br>
+    <b>unordered</b>(): возвращает неупорядоченный стрим, для более эффективного выполнения.<br>
+    <b>parallel</b>(), sequential(): возвращают эквивалентный стрим, парралельность влияет на forEach.<br>
+    <b>onClose</b>(Runnable closeHandler): возвращает эквивалентный стрим с дополнительным обработчиком закрытия.<br>
+    <br>
+    <b><u>Для примитивных стримов</u></b><br>
+    <b>mapToInt</b>(ToIntFunction mapper), <b>mapToLong, mapToDouble</b>: возвращают примитивные стримы: <b>IntStream, LongStream, DoubleStream.</b><br>
+    <b>flatMapToInt</b>(Function&ltT,IntStream&gt mapper) ....<br>
+    <b>asLongStream(), asDoubleStream()</b>: Преобразует IntStream в нужный<br>
+    <b>boxed</b>(): преобразует в стрим объектов.<br>
+    <b>range</b>(int startInclusive, int endExclusive): (только для IntStream и LongStream), генерирует стрим, состоящий из заданного диапазона чисел.<br>
+    <b>rangeClosed</b>(int startInclusive, int endInclusive): включает последнее число.<br>
+    <br>
+    <p style="color: blue;"><b><u>Терминальные (terminal) операции:</u></b></p>
+    <b>forEach</b>(Consumer&lt? super T&gt action): выполняет операцию над каждым элементом стрима.<br>
+    <b>toArray</b>(): возвращает массив<br>
+    <b>reduce</b>(T identity, BinaryOperator&ltT&gt accumulator): Принимает BinaryOperator, который применяется ко всем элементам стрима для получения единственного результата.<br>
+    <b>collect(Collectors.toList())</b> Чаще всего используется стандартные <a href="#collectors">коллекторы</a> из пакета <b>Collectors</b><br>
+    <b>collect</b>(Supplier&ltR&gt supplier, BiConsumer&ltR, ? super T&gt accumulator, BiConsumer&ltR, R&gt combiner): Принимает три аргумента - supplier (создает новый объект результата), accumulator (добавляет элемент стрима в результат) и combiner (объединяет два результата в один).<br>
+    <b>min</b>(Comparator&lt? super T&gt comparator) и <b>max</b>(Comparator&lt? super T&gt comparator)<br>
+    <b>count</b>(): возвращает количество элементов в стриме.<br>
+    <b>anyMatch</b>(Predicate&lt? super T&gt predicate), <b>allMatch, noneMatch</b>удовлетворяют ли элементы стрима определенному условию.<br>
+    <b>findFirst(), findAny()</b>: возвращают первый или любой элемент из стрима соответственно.<br>
+    <br>
+    <b><u>Для примитивных стримов</u></b><br>
+    <b>sum</b>()<br>
+    <b>average()</b><br>
+    <b>summaryStatistics</b>(): возвращает статистику IntSummaryStatistics (максимум, минимум, сумма и среднее)<br>
+    <br>
+    <b>max(), min()</b>: Отличие: Без компоратора и возвращают OptionalInt, OptionalLong или OptionalDouble.<br>
+    <b>findFirst(), findAny()</b>: Отличие: возвращают OptionalInt, OptionalLong или OptionalDouble<br>
+    <br>
+    <b><u>Функциональные интерфейсы</u></b><br>
+    <b>Predicate&ltT&gt:</b> принимает один аргумент типа T и возвращает boolean. Используется в фильтрации.<br>
+    <b>Consumer&ltT&gt:</b> принимает один аргумент типа T и не возвращает результат. Обычно используется, когда нужно выполнить какое-то действие на каждый элемент стрима.<br>
+    <b>Supplier&ltT&gt:</b> не принимает аргументов и возвращает результат типа T.<br>
+    <b>Function&ltT, R&gt:</b> принимает один аргумент типа T и возвращает результат типа R.<br>
+    <b>UnaryOperator&ltT&gt:</b> принимает один аргумент типа T и возвращает результат того же типа. Это специализированный вид Function.<br>
+    <br>
+    <b>BiFunction&ltT, U, R&gt:</b> принимает два аргумента типов T и U и возвращает результат типа R.<br>
+    <b>BiPredicate&ltT, U&gt:</b> принимает два аргумента типов T и U и возвращает boolean.<br>
+    <b>BiConsumer&ltT, U&gt:</b> принимает два аргумента типов T и U и не возвращает результат.<br>
+    <b>BinaryOperator&ltT&gt:</b> принимает два аргумента типа T и возвращает результат того же типа. Это специализированный вид BiFunction.<br>
+    <br>
+    <p id="collectors"><b><u>коллекторы из пакета Collectors</u></b></p>
+    <b>toList():</b> Собирает элементы в List.<br>
+    <b>toSet():</b> Собирает элементы в Set.<br>
+    <b>counting():</b> подсчитывает количество элементов.<br>
+    <b>joining():</b> который конкатенирует строки.<br>
+    <b>groupingBy</b>(Function&lt? super T,? extends K&gt classifier): группирует по категориям, и возвращает Map.<br>
+</body>
+</html>

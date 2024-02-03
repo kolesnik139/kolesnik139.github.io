@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JDBC</title>
+</head>
+<body>
+    1 Connection<br>
+    PreparedStatement<br>
+    ResultSet<br>
+    <br>
+    2 List<Item> items = jdbcTemplate.query("SELECT * FROM item", new BeanPropertyRowMapper<>(Item.class));<br>
+    <br>
+    3 PreparedStatementCreatorFactory pscf = new PreparedStatementCreatorFactory("Insert ...", Types.VARCHAR, Type.LONG,);<br>
+    pscf.setReturnGeneratedKeys(true);<br>
+    PreparedStatementCreator psc = pscf.newPreparedStatementCreator(Arrays.asList(var1, var2));<br>
+    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();<br>
+    !!!jdbcOperations.update(psc, keyHolder);<br>
+    long tacoId = keyHolder.getKey().longValue();<br>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Коллекции</title>
+</head>
+<body>
+	Дженериками (обобщёниями) могут быть классы, интерфейсы и методы<br>
+	<b>Проверка происходит на этапе компиляции!</b><br>
+	<pre>
+	public &ltT&gt T doSomething(T t){ // T Type parameter
+		return t;
+	}
+
+	public class Solution &ltT&gt{ ..... }
+
+	public interface MyGenericInterface&ltT&gt
+	можно реализовать так:
+	public class MyImplementation implements MyGenericInterface&ltString&gt{...}
+	или так:
+	public class MyGenericClass&ltT> implements MyGenericInterface&ltT&gt{...}
+
+	public class Printer &ltT extends Animal&gt{ // bounded generic
+		T animal;
+		animal.eat() // Common Animal method
+	}
+	</pre>
+
+	Для интерфейса тоже <b>extends</b><br>
+	public class Printer &ltT extends Animal &amp Serrializable &amp Runnable&gt{...} // класс первый, за ним интерфейсы
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exceptions</title>
+</head>
+<body>
+    <b>Try with Resources</b><br>
+    Resource иммплементирует интерфейс <b>Closable</b><br>
+    Reader, Writer, FileReader, BufferedReader, InputStream, OutputStream, Socket, ServerSocket.<br>
+    или <b>AutoClosable</b><br>
+    (JDBC) Connection, Statement, ResultSet.<br>
+    <b>Если исключение и в try и при close(), то основным будет из try, из close() будет подавленным.</b> (проверено)
+    <pre>
+        public void doSolution() {
+            try (Resource resource = new Resource()) {
+                throw new Exception("MAIN_EXC");
+            } catch (Exception e) {
+                // Основным будет MAIN_EXC. CLOSING_EXC попадёт в suppressedExceptions 
+            }
+        }
+
+        class Resource implements AutoCloseable {
+            @Override
+            public void close() throws IOException {
+                throw new IOException("CLOSING_EXC");
+            }
+        }
+    </pre>
+
+    *******************************<br>
+    <b>Происходит эксэпшн в try и в finally. Будет тот, что в finally. Подавленного не будет</b> (проверено)
+    <br>*******************************<br>
+
+    Если несколько блоков <b>Catch</b>, то сначала специфичные (дети), потом родители<br>
+    catch (NumberFormatException | NullPointerException){...}<br>
+    можно try + catch, можно try + finally.<br>
+    <pre>
+        public int doSolution() { // Вернёт 5 !!!
+            try{
+                return 3;
+            }finally{
+                return 5;
+            }
+        }
+    </pre>
+
+    <img src="../pictures/exceptions.jpg" width="100%">
+</body>
+</html>

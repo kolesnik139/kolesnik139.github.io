@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java общее</title>
+</head>
+<body>
+    <b>При переопределении (override) методов:</b><br>
+    1. Типы параметров: == такие же<br>
+    2. Возвращаемый тип: &lt= такой же, или подтип (ковариантный возвращаемый тип).<br>
+    3. Уровень доступа: &gt= такой же, или шире.<br>
+    4. Исключение: &lt= такое же, или уже.<br>
+    <br>
+    <b> Если в интерфейсах A и B есть метод default void foo(){}</b>
+    <pre>
+    public class C implements A, B {
+    @Override
+    public void foo() {
+        A.super.foo();
+    }
+    }
+    </pre>
+</body>
+</html>

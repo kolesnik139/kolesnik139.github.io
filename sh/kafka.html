@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka</title>
+</head>
+<body>
+    Kafka - это Message Broker<br><br>
+    <b>Broker</b> - Сервер. Ими управляет Zookeeper. Хранит несколько партишинов и их реплик<br><br>
+    <b>Topic</b> - Поток сообщений.<br><br>
+    <b>Partition</b> - Часть топика. партишины и их реплики хранятся на разных брокерах.<br><br>
+    <b>acknowledgments</b>
+    <b>acks=0</b> - Продюсер не ждёт подтверждения<br>
+    <b>acks=1</b> - Подтверждение от лидер-реплики<br>
+    <b>acks=-1 acks=all</b> - Подтверждение от всех реплик<br><br>
+    <b>Delivery semantics</b> - гарантии доставки<br>
+    <b>At most once:</b> максимум один раз, но могут быть потеряны.<br>
+    <b>At least once:</b> по крайней мере один раз, могут быть дублированы.<br>
+    <b>Exactly once</b>
+</body>
+</html>

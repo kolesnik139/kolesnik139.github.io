@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immutable Types, Pojo</title>
+</head>
+<body>
+    <b>Immutable Types</b><br>
+    <blockquote><b>1. String:</b> Все операции над строками создают новые строки.<br>
+    <b>2. Integer, Long, Short, Byte, Character, Double, Float, и т. д.:</b> Оболочки для примитивных типов неизменяемы.<br>
+    <b>3. BigInteger и BigDecimal</b><br>
+    <b>4. LocalDate, LocalTime, LocalDateTime, Instant:</b> Классы из пакета java.time<br>
+    <b>5. Collections.unmodifiableXXX():</b> C помощью методов Collections.unmodifiableXXX() создаётся Immutable обёртка<br>
+    <b>6. Enum:</b> Типы-перечисления<br>
+    <b>7. java.lang.StackTraceElement</b><br></blockquote>
+    <br>
+    <b>Immutable POJO</b><br>
+    <pre>
+    public class Human {
+        private final String firstName;
+        private final String lastName;
+        private final List&ltHuman&gt relatives;
+
+        public Human(String firstName, String lastName, List&ltHuman&gt relatives) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            // Создаем защитную копию списка relatives
+            this.relatives = new ArrayList&lt&gt(relatives);
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public List&ltHuman&gt getRelatives() {
+            // Возвращаем защитную копию списка relatives
+            return new ArrayList&lt&gt(relatives);
+        }
+    }
+    </pre>
+</body>
+</html>

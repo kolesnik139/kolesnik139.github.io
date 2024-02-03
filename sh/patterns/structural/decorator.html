@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decorator</title>
+</head>
+<body>
+    Есть <b>интерфейс</b>. <b>Конкретный компонент</b> его имплементирует.<br>
+    Абстрактный класс <b>Базовый декоратор</b> тоже его имплементирует и содержит (получает через конструктор) объект <b>Имплементирующий интерфейс!!!</b> (может быть <b>конкретный компонент</b> или <b>конкретный декоратор</b>)<br>
+    И как и прокси вызывает его методы из своих методов.<br>
+    <b>Конкретный декоратор</b> наследует <b>базовый</b> и может переопределять и использовать его методы добавляя функциональность<br>
+    <pre>
+    // Интерфейс компонента
+    interface Coffee {
+        String getDescription();
+    }
+
+    // Конкретный компонент
+    class SimpleCoffee implements Coffee {
+        @Override
+        public String getDescription() {
+            return "Simple coffee";
+        }
+    }
+
+    // Базовый декоратор
+    abstract class CoffeeDecorator implements Coffee {
+        protected final Coffee decoratedCoffee;
+
+        public CoffeeDecorator(Coffee c) {
+            this.decoratedCoffee = c;
+        }
+
+        @Override
+        public String getDescription() {
+            return decoratedCoffee.getDescription();
+        }
+    }
+
+    // Конкретный декоратор1
+    class WithMilk extends CoffeeDecorator {
+        public WithMilk(Coffee c) {
+            super(c);
+        }
+
+        @Override
+        public String getDescription() {
+            return super.getDescription() + ", with milk";
+        }
+    }
+
+    // Конкретный декоратор2
+    class WithSugar extends CoffeeDecorator {
+        public WithSugar(Coffee c) {
+            super(c);
+        }
+
+        @Override
+        public String getDescription() {
+            return super.getDescription() + ", with sugar";
+        }
+    }
+
+    //ИСПОЛЬЗОВАНИЕ
+    Coffee c = new SimpleCoffee();
+    System.out.println(c.getDescription()); // Simple coffee
+
+    c = new WithMilk(c);
+    System.out.println(c.getDescription()); // Simple coffee, with milk
+
+    c = new WithSugar(c);
+    System.out.println(c.getDescription()); // Simple coffee, with milk, with sugar
+    </pre>
+</body>
+</html>

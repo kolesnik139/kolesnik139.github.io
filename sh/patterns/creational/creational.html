@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creational</title>
+</head>
+<body>
+    <b>Builder</b> используется для создания объектов с составными частями (комплексными объектами), позволяя создавать различные конфигурации объектов, скрывая детали их создания.<br>
+    &nbsp 1. StringBuilder, StringBuffer<br>
+    &nbsp 2. Hibernate: CriteriaBuilder<br>
+    &nbsp 3. Spring Framework: RestTemplateBuilder<br>
+    <br>
+    <b>Singleton</b> гарантирует, что класс имеет только один экземпляр, и предоставляет глобальную точку доступа к этому экземпляру.<br>
+    &nbsp 1. Spring Framework: Singleton bean<br>
+    &nbsp 2. Java: Enum<br>
+    <br>
+    <b>Prototype</b> используется для создания новых объектов путем клонирования существующих объектов, вместо создания новых объектов "с нуля".<br>
+    &nbsp 1. Spring Framework: Prototype bean<br>
+    &nbsp 2. Java: Clone()<br>
+    <br>
+    <b>Factory Method</b> определяет общий интерфейс для создания объектов, но позволяет подклассам решать, какой класс инстанцировать. Таким образом, создание объектов происходит через метод-фабрику.<br>
+    &nbsp 1. Java создание коллекций: ArrayList::new, HashMap::new, HashSet::new ... являются фабричными методами<br>
+    &nbsp 2. Hibernate: SessionFactory::openSession являются фабричными методам<br>
+</body>
+</html>

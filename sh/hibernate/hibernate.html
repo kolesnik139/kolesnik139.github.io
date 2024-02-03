@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Hibernate</title>
+</head>
+<body>
+	<details>
+		<summary><b>hibernate.hbm2ddl.auto</b></summary>
+		&nbsp&nbsp&nbsp&nbsp 1. VALIDATE: Проверяет соответствие схемы, но не вносит изменений в базу.<br>
+		&nbsp&nbsp&nbsp&nbsp 2. UPDATE: Обновляет схему. Не удаляет уже существующие таблицы или колонки.<br>
+		&nbsp&nbsp&nbsp&nbsp 3. CREATE: Создаёт схему, уничтожая предыдущие данные.<br>
+		&nbsp&nbsp&nbsp&nbsp 4. CREATE-DROP: Ещё и удаляет схему при закрытии SessionFactory (приложения).<br>
+		&nbsp&nbsp&nbsp&nbsp 5. NONE: Ничего не делает с базой данных.<br>
+	</details>
+	<br>
+	<details>
+		<summary><b>Задать уровни изоляции транзакций</b></summary>
+		<pre>
+		// В application.properties
+		spring.jpa.properties.hibernate.connection.isolation=2
+		Connection.TRANSACTION_READ_UNCOMMITTED   // 1
+		Connection.TRANSACTION_READ_COMMITTED     // 2
+		Connection.TRANSACTION_REPEATABLE_READ    // 4
+		Connection.TRANSACTION_SERIALIZABLE       // 8
+		</pre>
+		&nbsp&nbsp&nbsp&nbsp <a href="../transaction_isolation.html">уровни изоляции</a>
+	</details>
+	<br>
+	<details>
+		<summary><b>Уровни Кеша</b></summary>
+		<details>
+			<summary><b>&nbsp&nbsp 1st Level Cache</b></summary>
+			<blockquote>
+				Ассоциирован с Session объектом Hibernate / EntityManager JPA<br>
+				PersistenceContext является этим кэшем<br>
+				Каждая Session/EntityManager имеет свой собственный 1st Level Cache<br>
+				Каждая извлечённая Entity кешируется. При повторном извлечении - достаётся из кэша<br>
+				Включён по умолчанию и не может быть выключен
+			</blockquote>
+		</details>
+		<details>
+			<summary><b>&nbsp&nbsp 2nd Level Cache</b></summary>
+			<blockquote>
+				Охватывает SessionFactory/EntityManagerFactory и является общим для всех экземпляров Session/EntityManager<br>
+				На этом уровне кешируются объекты между сессиями/ентити менеджерами<br>
+				Не включён и требует сторонних библиотек<br>
+				Можно настроить какие Entity и как он будет кешировать
+			</blockquote>
+		</details>
+		<details>
+			<summary><b>&nbsp&nbsp Кеш запросов (Query Cache)</b></summary>
+			<blockquote>
+				Используется для кеширования результатов определенных запросов.<br>
+				Не включен по умолчанию. Работает только вместе с 2nd Level Cache<br>
+				Хранит только идентификаторы сущностей, а сами сущности хранятся в 2nd Level Cache.
+			</blockquote>
+		</details>
+	</details>
+	<br>
+	<details>
+		<summary><b>HIBERNATE (Session) методы</b></summary>
+		<blockquote>
+		<b>save(Object entity)</b> Переводит Entity в Persistent state.<br>
+		<b>update(Object entity)</b> Обновляет существующий объект в базе данных.<br>
+		<b>saveOrUpdate(Object entity)</b> Если объект имеет ID, то он обновляется, в противном случае - сохраняется.<br>
+		<b>T get(Class<T> entityClass, Serializable id)</b> Загружает объект по его идентификатору. Или null<br>
+		<b>T load(Class<T> entityClass, Serializable id)</b> Lazy get<br>
+		<b>delete(Object entity)</b> Удаляет объект из базы данных<br>
+		<b>refresh(Object entity)</b> Обновляет объект из базы данных по ID<br>
+		<b>evict(Object entity)</b> Удаляет обьект из persistance context<br>
+		<b>clear()</b> Очищает persistance context<br>
+		<b>boolean isDirty()</b> true если в persistance context есть изменения<br>
+		<b>flush()</b> Принудительно синхронизирует состояние всех persistance объектов с базой данных.
+		</blockquote>
+	</details>
+	<details>
+		<summary><b>HIBERNATE Entity States</b></summary>
+		<img src="../pictures/hibernate_entity_states.png" width="100%">
+	</details>
+	<br>
+	<details>
+		<summary><b>JPA (EntityManager) методы</b></summary>
+		<blockquote>
+		<b>persist(Object entity)</b> Переводит Entity в Persistent state.<br>
+		<b>T merge(T entity)</b> Возвращает объект по ID из базы, или переводит в persistant новый (Работать с возвращённым!).<br>
+		<b>find(Class<T> entityClass, Object primaryKey)</b> Загружает объект по его идентификатору. Или null<br>
+		<b>getReference(Class<T> entityClass, Object primaryKey)</b> Lazy find<br>
+		<b>remove(Object entity)</b> Удаляет объект из базы данных<br>
+		<b>refresh(Object entity)</b> Обновляет объект из базы данных по ID<br>
+		<b>detach(Object entity)</b> Удаляет обьект из persistance context<br>
+		<b>clear()</b> Очищает persistance context<br>
+		<b>boolean isDirty()</b> true если в persistance context есть изменения<br>
+		<b>flush()</b> Принудительно синхронизирует состояние всех persistance объектов с базой данных.
+		</blockquote>
+	</details>
+	<details>
+		<summary><b>JPA Entity States</b></summary>
+		<img src="../pictures/jpa_entity_states.png" width="100%">
+	</details>
+	<br>
+	<details>
+		<summary><b>@OneToMany</b></summary>
+		<pre>
+		@Entity
+		@Table(name = "companies")
+		public class Company {
+			@Id
+			@GeneratedValue(strategy = GenerationType.IDENTITY)
+			private Integer id;
+			@OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+			private List<User> users;
+			...
+		}
+		
+		@Entity
+		@Table(name = "users")
+		public class User {
+			@Id
+			@GeneratedValue(strategy = GenerationType.IDENTITY)
+			private Integer id;
+			@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+			@JoinColumn(name = "company_id") // not necessary
+			private Company company;
+			....
+		}
+		</pre>
+	</details>
+	<details>
+		<summary><b>CascadeType</b></summary>
+		<blockquote>
+		ALL<br>
+		PERSIST<br>
+		MERGE<br>
+		REMOVE<br>
+		REFRESH<br>
+		DETACH
+		</blockquote>
+	</details>
+	<br>
+	<details>
+		<summary><b>@ManyToMany</b></summary>
+		<pre>
+		@Entity
+		public class User {
+			@ManyToMany(cascade = CascadeType.ALL)
+			@JoinTable(name = "user_chat", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "chat_id"))
+			private List&ltChat&gt chats = new ArrayList&lt&gt();
+			...
+		}
+		
+		@Entity
+		public class Chat {
+			@ManyToMany(mappedBy = "chats")
+			private List&ltUser&gt users = new ArrayList&lt&gt();
+		}
+		</pre>
+	</details>
+	<br>
+	<details>
+		<summary><b>Сортировка и Маппинг</b></summary>
+		&nbsp&nbsp&nbsp&nbsp <b>1. Сортировка с помощью SQL</b>
+		<pre>
+		@OneToMany(mappedBy = "company")
+		@OrderBy("firstname ASC")
+		private List&ltUser&gt users = new ArrayList<>();
+		</pre>
+		&nbsp&nbsp&nbsp&nbsp <b>2. В столбце user_order будет хранить порядковый номер</b>
+		<pre>
+		@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+		@OrderColumn(name = "user_order")
+		private List&ltUser&gt users = new ArrayList<>();
+		</pre>
+		&nbsp&nbsp&nbsp&nbsp <b>3. В Map</b>
+		<pre>
+		@OneToMany(mappedBy = "company")
+		@MapKey(name = "Id")
+		private Map&ltInteger, User&gt users = new HashMap<>();
+		</pre>
+	</details>
+	<br>
+	<details>
+		<summary><b>@MappedSuperclass</b></summary>
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 1. TABLE_PER_CLASS</b></summary>
+		<img src="../pictures/table_per_class.png">
+		<pre>
+		@Entity
+		@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+		public abstract class User {
+			@Id
+			@GeneratedValue(strategy = GenerationType.AUTO)
+			private Long id;
+			private String username;
+			...
+		}
+		
+		@Entity
+		public class Programmer extends User {
+			private String progLanguage;
+			...
+		}
+		
+		@Entity
+		public class Manager extends User {
+			private String projName;
+			...
+		}
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 2. SINGLE_TABLE</b></summary>
+		<img src="../pictures/single_table.png">
+		<pre>
+		@Entity
+		@Table(name = "EMPLOYEE")
+		@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+		@DiscriminatorColumn(name = "EMPLOYEE_TYPE")
+		public abstract class User {
+			@Id
+			@GeneratedValue(strategy = GenerationType.IDENTITY)
+			private Long id;
+			private String username;
+			...
+		}
+
+		@Entity
+		@DiscriminatorValue("PROGRAMMER")
+		public class Programmer extends User {
+			private String prog_language;
+			...
+		}
+
+		@Entity
+		@DiscriminatorValue("MANAGER")
+		public class Manager extends User {
+			private String proj_name;
+			...
+		}
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 3. JOINED</b></summary>
+		<img src="../pictures/joined.png">
+		<pre>
+		@Entity
+		@Table(name = "USER")
+		@Inheritance(strategy = InheritanceType.JOINED)
+		public abstract class User {
+			@Id
+			@GeneratedValue(strategy = GenerationType.IDENTITY)
+			private Long id;
+			private String username;
+			...
+		}
+
+		@Entity
+		@Table(name = "PROGRAMMER")
+		public class Programmer extends User {
+			private String prog_language;
+			...
+		}
+
+		@Entity
+		@Table(name = "MANAGER")
+		public class Manager extends User {
+			private String proj_name;
+			...
+		}
+		</pre>
+		</details>
+	</details>
+	<br>
+	<details>
+		<summary><b>Queries</b></summary>
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 1. Query</b></summary>
+		<pre>
+		List&ltUser&gt users = session.createQuery("select u from User u where lastname = :lastname")
+			.setParameter("lastname", str)
+			.list();
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 2. NamedQuery</b></summary>
+		<pre>
+		// IN User ROOT!
+		@NamedQuery(name = "FindUserByName",
+			query = "select u from User u where lastname = :lastname")
+			
+		// IN OTHER CLASS
+		List&ltUser&gt users = session.createNamedQuery("FindUserByName")
+			.setParameter("lastname", str)
+			.list();
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 3. NativeQuery</b></summary>
+		<pre>
+		List&ltUser&gt users = session.createNativeQuery("select * from users where lastname = :lastname", User.class)
+			.setParameter("lastname", str)
+			.list();
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 4. Update</b></summary>
+		<pre>
+		.executeUpdate();
+		как получить результат?
+		</pre>
+		</details>
+	</details>
+	<br>
+	<details>
+	<summary><b>N+1 Проблемма</b></summary>
+	&nbsp&nbsp&nbsp&nbsp Для каждой компании вызовется отделный запрос, что-бы достать Юзеров
+	<pre>
+		List<Company> companies = session.createQuery("Select c from Company c").list();
+		for(Company company : companies){
+			company.getUsers();
+		}
+	</pre>
+	&nbsp&nbsp&nbsp&nbsp<b> Способы решения:</b><br>
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 1. join fetch</b></summary>
+		<pre>
+		Select c from Company c LEFT JOIN FETCH c.users
+		// Сформирует запрос с left join
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 2. @BatchSize(size = 10)</b></summary>
+		<pre>
+		// Аннотация для ПОЛЯ users
+		// Добавит запрос/ы: select &ltполя&gt from users where company_id in (?,?,?,?,?,?,?,?,?,?)
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 3. @FetchProfile</b></summary>
+		<pre>
+		// Для того чтобы достать определённые SubEntity.
+		// Аннотация для КЛАССА Company
+		@FetchProfile(name = "withCompany", fetchOverrides = {
+			@FetchProfile.FetchOverride(entity = Company.class, association = "users", mode = FetchMode.JOIN)
+		})
+		
+		session.enableFetchProfile("withCompany");
+		//Действие с базой
+		session.disableFetchProfile("withCompany");
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp 4. EntityGraph</b></summary>
+		<pre>
+		// Для того чтобы достать определённые SubEntity и SubSubEntity и т.д.
+		// Аннотация для КЛАССА Company
+		@NamedEntityGraph(name = "withCompany", attributeNodes = {
+			@NamedAttributeNode("users")
+		})
+		
+		//Для find
+		RootGraph&ltCompany&gt companyGraph = session.createEntityGraph(Company.class);
+		companyGraph.addAttributeNodes("users");
+		Map&ltString, Object&gt properties = Map.of(
+			GraphSemantic.LOAD.getJakartaHintName(), companyGraph
+		);
+		Company company = session.find(Company.class, 1, properties);
+		
+		//Для Query
+		List<Company> companies = session.createQuery("Select c from Company c")
+			.setHint(GraphSemantic.LOAD.getJakartaHintName(), companyGraph)
+			.list();
+		
+		</pre>
+		</details>
+	</details>
+	<br>
+	<details>
+		<summary><b>Бдокировки Locking</b></summary>
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp @OptimisticLocking</b></summary>
+		<b>&nbsp&nbsp&nbsp&nbsp На уровне приложения</b>
+		<pre>
+		@Entity
+		@OptimisticLocking(type = OptimisticLockType.VERSION)
+		public class MyEntity {
+			@Version
+			private Integer version;
+			...
+		}
+		
+		MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.OPTIMISTIC);
+		</pre>
+		</details>
+		
+		<details>
+		<summary><b>&nbsp&nbsp&nbsp&nbsp PESSIMISTIC</b></summary>
+		<b>&nbsp&nbsp&nbsp&nbsp На уровне БД</b>
+		<pre>
+		MyEntity myEntity1 = session1.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_READ);
+		// Add to SQL: FOR SHARE
+		
+		MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_WRITE);
+		// Add to SQL: FOR UPDATE
+		
+		MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+		// Add to SQL: FOR UPDATE NOWAIT
+		</pre>
+		</details>
+	</details>
+	<br>
+	<details>
+		<summary><b>ReadOnly Mode</b></summary>
+		<b>&nbsp&nbsp&nbsp&nbsp Не сохраняет изменения, но читает быстрее</b>
+		<pre>
+		@Transactional(readOnly = true)
+		
+		session.setReadOnly(entity, true);
+		
+		session.setDefaultReadOnly(true);
+		
+		</pre>
+		</details>
+	</details>
+	<br>
+	<details>
+		<summary><b>Callback</b></summary>
+		<b>&nbsp&nbsp&nbsp&nbsp Анотированные методы в Entity</b>
+		<pre>
+		@PrePersist
+		@PostPersist
+		@PreRemove
+		@PostRemove
+		@PreUpdate
+		@PostUpdate
+		@PostLoad
+		</pre>
+		&nbsp&nbsp&nbsp&nbsp Есть ешё интерсепторы
+		</details>
+	</details>
+	<br>
+	<details>
+		<summary><b>@Audited</b></summary>
+		&nbsp&nbsp&nbsp&nbsp 1. В Pom.xml добавить зависимость Hibernate ENVERS<br>
+		&nbsp&nbsp&nbsp&nbsp 2. Анотировать Ентити @Audited. Не аудируемые поля отметить @NotAudited<br>
+		&nbsp&nbsp&nbsp&nbsp 3. Создать таблицу ENTITIES_AUD со всеми полями +<br>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Integer REV: Это идентификатор записи аудита. 0, 1, 2, ...<br>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Integer REVTYPE: Тип ревизии: 0-ADD, 1-MOD, 2-DEL<br>
+		&nbsp&nbsp&nbsp&nbsp 4. Создать таблицу REVINFO с полями:<br>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Integer REV<br>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Timestamp REVTSTMP
+	</details>
+	<br>
+	<details>
+		<summary><b>JpaRepository</b></summary>
+		<pre>
+		@NoRepositoryBean
+		public interface JpaRepository<T, ID> extends ListCrudRepository<T, ID>, ListPagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {...}
+
+
+		public interface UserRepository extends JpaRepository<User, Long> {
+		
+			//Предоставляет методы по умолчанию
+			S save(S entity);
+			Optional<T> findById(ID id)
+			boolean existsById(ID id)
+			List<T> findAll()
+			long count()
+			void deleteById(ID id)
+			...
+		
+			List<User> findByUsername(String username); //Реализует по имени!
+			List<User> findByUsernameLike(String username);
+			List<User> findByUsernameEndingWith(String username);
+		
+			@Query("SELECT u FROM User u WHERE u.firstname = ?1")
+			List<User> findByFirstName(String firstName);
+			
+			@Query(value = "SELECT * FROM users WHERE firstname = ?1", nativeQuery = true)
+			List<User> findByFirstNameUsingSQL(String firstName);
+		}
+		</pre>
+		&nbsp&nbsp&nbsp&nbsp <b>Чтобы добавить кастомную реализацию:</b><br>
+		&nbsp&nbsp&nbsp&nbsp 1. Добавляем интерфейс с нужными методами<br>
+		&nbsp&nbsp&nbsp&nbsp 2. Реализуем этот интерфейс и методы<br>
+		&nbsp&nbsp&nbsp&nbsp 3. public interface UserRepository extends JpaRepository&ltUser, Long&gt, ЭтотИнтерфейс {...}<br>
+		</details>
+	</details>
+</body>
+</html>

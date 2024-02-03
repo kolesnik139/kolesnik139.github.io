@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy</title>
+</head>
+<body>
+    Реальный объект и прокси имплементируют один интерфейс<br>
+    Прокси замещает собой реальный объект.<br>
+    Прокси содержит в себе экземпляр объекта и в своих методах вызывает его методы.<br>
+    + доп функциональность (проверка прав, логирование ...)<br>
+    <pre>
+    // Интерфейс
+    interface Image {
+        void display();
+    }
+
+    // Реальный объект
+    class RealImage implements Image {
+        @Override
+        public void display() {
+            //показывает Image
+        }
+    }
+
+    // Прокси
+    class ProxyImage implements Image {
+        @Override
+        public void display() {
+            if (realImage == null) {
+                realImage = new RealImage(filename);
+            }
+            realImage.display();
+            log.debug("Display Image!"); // ДОП ФУНКЦИОНАЛЬНОСТЬ
+        }
+    }
+
+    // Клиентский код
+    public class ProxyPatternDemo {
+        public static void main(String[] args) {
+            Image image = new ProxyImage();
+            image.display(); 
+        }
+    }
+    </pre>
+</body>
+</html>

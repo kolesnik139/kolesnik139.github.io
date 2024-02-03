@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Степени изоляции транзакций</title>
+</head>
+<body>
+    Степени изоляции решают проблемы, связанные с параллельным доступом к данным и обеспечением их целостности.<br><br>
+
+    Пр <b>Phantom Read</b> Транзакция при повторном чтении видит новую строку, которую вставила другая транзакция.<br>
+    Реш <b><u>Serializable</u></b><br><br>
+
+    Пр <b>Non-repeatable Read</b> Транзакция при повторном чтении строки видит изменения внесённые другой транзакцией.<br>
+    Реш <b><u>Repeatable Read</u></b><br><br>
+
+    Пр <b>Dirty Read</b> Транзакция при чтении видит ещё не закоммиченные изменения внесённые другой транзакцией.<br>
+    Реш <b><u>Read Committed</u></b><br><br>
+
+    Пр <b></b> <br>
+    Реш <b><u>Read Uncommitted</u></b> Ничего не решает
+</body>
+</html>

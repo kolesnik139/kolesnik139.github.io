@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adapter</title>
+</head>
+<body>
+    <pre>
+    // Предположим, у нас есть старый интерфейс
+    interface OldInterface {
+        void oldMethod();
+    }
+
+    // И старый класс, который реализует старый интерфейс
+    class OldClass implements OldInterface {
+        public void oldMethod() {
+            System.out.println("Old method called");
+        }
+    }
+
+    // Мы хотим использовать старый класс в нашем новом коде, который ожидает новый интерфейс
+    interface NewInterface {
+        void newMethod();
+    }
+
+    // Создаем адаптер, который реализует новый интерфейс и содержит старый объект
+    class Adapter implements NewInterface {
+        private OldInterface oldObject;
+
+        public Adapter(OldInterface oldObject) {
+            this.oldObject = oldObject;
+        }
+
+        public void newMethod() {
+            // вызываем старый метод через адаптер
+            oldObject.oldMethod();
+        }
+    }
+
+    // Теперь мы можем использовать старый класс с новым интерфейсом
+    public class AdapterPatternDemo {
+        public static void main(String[] args) {
+            OldInterface oldObject = new OldClass();
+            NewInterface newObject = new Adapter(oldObject);
+            newObject.newMethod();  // Вывод: "Old method called"
+        }
+    }
+    </pre>
+</body>
+</html>

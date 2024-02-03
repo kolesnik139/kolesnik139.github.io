@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL</title>
+</head>
+<body>
+    <b>Common Table Expressions (CTE)</b>
+    <pre>
+    WITH CTE_Name AS (
+        SELECT column1, column2
+        FROM some_table
+        WHERE condition
+    )
+    SELECT column1, column2
+    FROM CTE_Name
+    WHERE another_condition;
+    </pre>
+    <b>Оптимизация SQL запросов</b><br>
+    1. Индексы<br>
+    2. Не использовать *<br>
+    3. JOIN вместо подзапроса или наоборот<br>
+    4. INNER JOIN вместо OUTER JOIN<br>
+    5. Если подзапрос используется несколько раз - используй CTE ^<br>
+    6. EXPLAIN что-бы понять как оно выполняется. Возвращает:<br>
+    &nbsp&nbsp&nbsp&nbsp <b>id:</b> ID запроса.<br>
+    &nbsp&nbsp&nbsp&nbsp <b>select_type:</b> Тип выборки (SIMPLE, PRIMARY, SUBQUERY и т.д.).<br>
+    &nbsp&nbsp&nbsp&nbsp <b>table:</b> Имя таблицы.<br>
+    &nbsp&nbsp&nbsp&nbsp <b>type:</b> Тип соединения (system, const, eq_ref, ref, fulltext, ref_or_null, index_merge, unique_subquery, index_subquery, range, index, ALL).<br>
+    &nbsp&nbsp&nbsp&nbsp <b>possible_keys:</b> Возможные индексы, которые можно использовать.<br>
+    &nbsp&nbsp&nbsp&nbsp <b>key:</b> Индекс, который действительно будет использоваться.<br>
+    &nbsp&nbsp&nbsp&nbsp <b>key_len:</b> Длина ключа.<br>
+    &nbsp&nbsp&nbsp&nbsp <b>ref:</b> Сравниваемые столбцы или константы.<br>
+    &nbsp&nbsp&nbsp&nbsp <b>rows:</b> Оценка количества строк для проверки.<br>
+    &nbsp&nbsp&nbsp&nbsp <b>Extra:</b> Дополнительная информация.<br>
+</body>
+</html>

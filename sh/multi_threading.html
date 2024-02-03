@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Многопоточность</title>
+</head>
+<body>
+    <b>Volatile</b> гарантирует что каждый поток работает непосредственно с этой переменной. Не с кешем.<br>
+    если обращение к переменной ВСЕГДА происходит их Synchronized блоков - Volatile не нужен<br>
+    <br>
+    <b>Атомарные типы данных</b> CAS (Compare-And-Swap). java.util.concurrent.atomic<br>
+    AtomicInteger: get, set, incrementAndGet (атомарно увеличивает на 1), decrementAndGet (атомарно уменьшает на 1), addAndGet и compareAndSet.<br>
+    AtomicLong: то же самое с long.<br>
+    AtomicBoolean<br>
+    AtomicReference: с ссылочными типами данных: get, set и compareAndSet для объектов.<br>
+    AtomicIntegerArray, AtomicLongArray, AtomicReferenceArray<br>
+    <br>
+    <b>Дедлок</b> бывает когда потоки взаимно ждут друг друга<br>
+    <br>
+    <b>1. Взаимный JOIN:</b><br>
+    в первом потоке thread2.join();<br>
+    а во втором thread1.join();<br>
+    <b>2. Взаимное ожидание ресурсов:</b><br>
+    Поток A захватывает ресурс R1 и ожидает ресурс R2.<br>
+    Поток B захватывает ресурс R2 и ожидает ресурс R1.<br>
+
+    <pre>
+    int cores = Runtime.getRuntime().availableProcessors();
+    ExecutorService executor = Executors.newFixedThreadPool(cores);
+    executor.submit(new CallableImpl());
+    </pre>
+</body>
+</html>
