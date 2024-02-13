@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQL</title>
+    <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
-    <b>Common Table Expressions (CTE)</b>
+    <h1>Common Table Expressions (CTE)</h1>
     <pre>
     WITH CTE_Name AS (
         SELECT column1, column2
@@ -15,24 +16,84 @@
     )
     SELECT column1, column2
     FROM CTE_Name
-    WHERE another_condition;
-    </pre>
-    <b>Оптимизация SQL запросов</b><br>
-    1. Индексы<br>
-    2. Не использовать *<br>
-    3. JOIN вместо подзапроса или наоборот<br>
-    4. INNER JOIN вместо OUTER JOIN<br>
-    5. Если подзапрос используется несколько раз - используй CTE ^<br>
-    6. EXPLAIN что-бы понять как оно выполняется. Возвращает:<br>
-    &nbsp&nbsp&nbsp&nbsp <b>id:</b> ID запроса.<br>
-    &nbsp&nbsp&nbsp&nbsp <b>select_type:</b> Тип выборки (SIMPLE, PRIMARY, SUBQUERY и т.д.).<br>
-    &nbsp&nbsp&nbsp&nbsp <b>table:</b> Имя таблицы.<br>
-    &nbsp&nbsp&nbsp&nbsp <b>type:</b> Тип соединения (system, const, eq_ref, ref, fulltext, ref_or_null, index_merge, unique_subquery, index_subquery, range, index, ALL).<br>
-    &nbsp&nbsp&nbsp&nbsp <b>possible_keys:</b> Возможные индексы, которые можно использовать.<br>
-    &nbsp&nbsp&nbsp&nbsp <b>key:</b> Индекс, который действительно будет использоваться.<br>
-    &nbsp&nbsp&nbsp&nbsp <b>key_len:</b> Длина ключа.<br>
-    &nbsp&nbsp&nbsp&nbsp <b>ref:</b> Сравниваемые столбцы или константы.<br>
-    &nbsp&nbsp&nbsp&nbsp <b>rows:</b> Оценка количества строк для проверки.<br>
-    &nbsp&nbsp&nbsp&nbsp <b>Extra:</b> Дополнительная информация.<br>
+    WHERE another_condition;</pre>
+    <br>
+    <h1>Оптимизация SQL запросов</h1>
+    <div class="tab">
+        1. Индексы<br>
+        2. Не использовать *<br>
+        3. JOIN вместо подзапроса или наоборот<br>
+        4. INNER JOIN вместо OUTER JOIN<br>
+        5. Если подзапрос используется несколько раз - используй CTE ^<br>
+        6. EXPLAIN что-бы понять как оно выполняется. Возвращает:<br>
+        <div class="tab">
+            <b>id:</b> ID запроса.<br>
+            <b>select_type:</b> Тип выборки (SIMPLE, PRIMARY, SUBQUERY и т.д.).<br>
+            <b>table:</b> Имя таблицы.<br>
+            <b>type:</b> Тип соединения (system, const, eq_ref, ref, fulltext, ref_or_null, index_merge, unique_subquery, index_subquery, range, index, ALL).<br>
+            <b>possible_keys:</b> Возможные индексы.<br>
+            <b>key:</b> Реально используемые индексы.<br>
+            <b>key_len:</b> Длина ключа.<br>
+            <b>ref:</b> Сравниваемые столбцы или константы.<br>
+            <b>rows:</b> Количество строк.<br>
+            <b>filtered:</b> Оценка количества строк для проверки.<br>
+            <b>Extra:</b> Дополнительная информация.
+        </div>
+    </div>
+    <br>
+    <h1>Indexes</h1>
+    <div class="tab">
+        Виды: <b>B-Tree</b>, Hash, Full-Text, Spatial(координаты)<br>
+        <b>function-based</b> (annual_salary/12)<br>
+        <b>Id</b> используется как <b>Кластеризованный индекс.</b> Находим бинарным поиском<br>
+        сначала надо ставить индесы с большей селективностью (меньше значений в результате)<br>
+        атрибуты в ORDER BY - в хвост индекса<br>
+        индексировать надо колонки по которым ищем и джойним<br>
+        <b>Добавить индекс:</b> ALTER TABLE Company ADD INDEX idx_industry (industry)<br>
+        <b>Добавить функциональный индекс:</b> ALTER TABLE Company ADD INDEX idx_length ((length(industry)))<br>
+        <b>Добавить generated column:</b> ALTER TABLE Company ADD COLUMN length INT AS (length(industry)) STORED/VIRTUAL;
+    </div>
+    <br>
+    <h1>View</h1>
+    <div class="tab">
+        Виртуальная таблица, созданная на основе результата выполнения запроса.<br>
+        Доступна как обычная таблица. Для чтения. Изменение данных в редких случаях<br>
+        Materialized view: Физическая таблица, обновляемая по расписанию или при изменении базовых данных
+    </div>
+    <br>
+    <h1>Stored Procedure</h1>
+    <div class="tab">
+        Набор инструкций SQL. Используются для бизнес логики, принято использовать для изменений.<br>
+        Вызывается CALL MyProcedure(123, 'example'); может принимать параметры.<br>
+        Могут возвращать результат.<br>
+        Предварительно компилируются
+    </div>
+    <br>
+    <h1>Function</h1>
+    <div class="tab">
+        Возвращает значение, принято использовать для чтения.<br>
+        Вызывается внутри запроса SELECT MyFunction(3, 4);
+    </div>
+    <br>
+    <h1>Trigger</h1>
+    <div class="tab">
+        привязан к таблице<br>
+        SQL Запросы, которые выполняются по событию в таблице
+        (BEFORE, AFTER, instead) (INSERT, UPDATE, DELETE)
+    </div>
+    <br>
+
+
+
+    Read Replicas  eventually propagation<br>
+
+    problem: eventual consistency<br>
+
+    <b>Data Warehousing аналитическая обработка</b><br>
+    ETL (Extract, Transform, Load)<br>
+    ELT (Extract, Load, Transform)<br>
+
+
+
 </body>
 </html>

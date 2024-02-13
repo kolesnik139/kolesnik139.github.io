@@ -4,318 +4,337 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Hibernate</title>
+	<link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 	<details>
 		<summary><b>hibernate.hbm2ddl.auto</b></summary>
-		&nbsp&nbsp&nbsp&nbsp 1. VALIDATE: Проверяет соответствие схемы, но не вносит изменений в базу.<br>
-		&nbsp&nbsp&nbsp&nbsp 2. UPDATE: Обновляет схему. Не удаляет уже существующие таблицы или колонки.<br>
-		&nbsp&nbsp&nbsp&nbsp 3. CREATE: Создаёт схему, уничтожая предыдущие данные.<br>
-		&nbsp&nbsp&nbsp&nbsp 4. CREATE-DROP: Ещё и удаляет схему при закрытии SessionFactory (приложения).<br>
-		&nbsp&nbsp&nbsp&nbsp 5. NONE: Ничего не делает с базой данных.<br>
+		<div class="tab">
+			1. VALIDATE: Проверяет соответствие схемы, но не вносит изменений в базу.<br>
+			2. UPDATE: Обновляет схему. Не удаляет уже существующие таблицы или колонки.<br>
+			3. CREATE: Создаёт схему, уничтожая предыдущие данные.<br>
+			4. CREATE-DROP: Ещё и удаляет схему при закрытии SessionFactory (приложения).<br>
+			5. NONE: Ничего не делает с базой данных.
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>Задать уровни изоляции транзакций</b></summary>
 		<pre>
-		// В application.properties
-		spring.jpa.properties.hibernate.connection.isolation=2
-		Connection.TRANSACTION_READ_UNCOMMITTED   // 1
-		Connection.TRANSACTION_READ_COMMITTED     // 2
-		Connection.TRANSACTION_REPEATABLE_READ    // 4
-		Connection.TRANSACTION_SERIALIZABLE       // 8
-		</pre>
-		&nbsp&nbsp&nbsp&nbsp <a href="../transaction_isolation.html">уровни изоляции</a>
+	// В application.properties
+	spring.jpa.properties.hibernate.connection.isolation=2
+	Connection.TRANSACTION_READ_UNCOMMITTED   // 1
+	Connection.TRANSACTION_READ_COMMITTED     // 2
+	Connection.TRANSACTION_REPEATABLE_READ    // 4
+	Connection.TRANSACTION_SERIALIZABLE       // 8</pre>
+		<a href="../transaction_isolation.html">уровни изоляции</a>
 	</details>
 	<br>
 	<details>
 		<summary><b>Уровни Кеша</b></summary>
-		<details>
-			<summary><b>&nbsp&nbsp 1st Level Cache</b></summary>
-			<blockquote>
-				Ассоциирован с Session объектом Hibernate / EntityManager JPA<br>
-				PersistenceContext является этим кэшем<br>
-				Каждая Session/EntityManager имеет свой собственный 1st Level Cache<br>
-				Каждая извлечённая Entity кешируется. При повторном извлечении - достаётся из кэша<br>
-				Включён по умолчанию и не может быть выключен
-			</blockquote>
-		</details>
-		<details>
-			<summary><b>&nbsp&nbsp 2nd Level Cache</b></summary>
-			<blockquote>
-				Охватывает SessionFactory/EntityManagerFactory и является общим для всех экземпляров Session/EntityManager<br>
-				На этом уровне кешируются объекты между сессиями/ентити менеджерами<br>
-				Не включён и требует сторонних библиотек<br>
-				Можно настроить какие Entity и как он будет кешировать
-			</blockquote>
-		</details>
-		<details>
-			<summary><b>&nbsp&nbsp Кеш запросов (Query Cache)</b></summary>
-			<blockquote>
-				Используется для кеширования результатов определенных запросов.<br>
-				Не включен по умолчанию. Работает только вместе с 2nd Level Cache<br>
-				Хранит только идентификаторы сущностей, а сами сущности хранятся в 2nd Level Cache.
-			</blockquote>
-		</details>
+		<div class="tab">
+			<details>
+				<summary><b>1st Level Cache</b></summary>
+				<div class="tab">
+					Ассоциирован с Session объектом Hibernate / EntityManager JPA<br>
+					PersistenceContext является этим кэшем<br>
+					Каждая Session/EntityManager имеет свой собственный 1st Level Cache<br>
+					Каждая извлечённая Entity кешируется. При повторном извлечении - достаётся из кэша<br>
+					Включён по умолчанию и не может быть выключен
+				</div>
+			</details>
+			<details>
+				<summary><b>2nd Level Cache</b></summary>
+				<div class="tab">
+					Охватывает SessionFactory/EntityManagerFactory и является общим для всех экземпляров Session/EntityManager<br>
+					На этом уровне кешируются объекты между сессиями/ентити менеджерами<br>
+					Не включён и требует сторонних библиотек<br>
+					Можно настроить какие Entity и как он будет кешировать
+				</div>
+			</details>
+			<details>
+				<summary><b>Кеш запросов (Query Cache)</b></summary>
+				<div class="tab">
+					Используется для кеширования результатов определенных запросов.<br>
+					Не включен по умолчанию. Работает только вместе с 2nd Level Cache<br>
+					Хранит только идентификаторы сущностей, а сами сущности хранятся в 2nd Level Cache.
+				</div>
+			</details>
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>HIBERNATE (Session) методы</b></summary>
-		<blockquote>
-		<b>save(Object entity)</b> Переводит Entity в Persistent state.<br>
-		<b>update(Object entity)</b> Обновляет существующий объект в базе данных.<br>
-		<b>saveOrUpdate(Object entity)</b> Если объект имеет ID, то он обновляется, в противном случае - сохраняется.<br>
-		<b>T get(Class<T> entityClass, Serializable id)</b> Загружает объект по его идентификатору. Или null<br>
-		<b>T load(Class<T> entityClass, Serializable id)</b> Lazy get<br>
-		<b>delete(Object entity)</b> Удаляет объект из базы данных<br>
-		<b>refresh(Object entity)</b> Обновляет объект из базы данных по ID<br>
-		<b>evict(Object entity)</b> Удаляет обьект из persistance context<br>
-		<b>clear()</b> Очищает persistance context<br>
-		<b>boolean isDirty()</b> true если в persistance context есть изменения<br>
-		<b>flush()</b> Принудительно синхронизирует состояние всех persistance объектов с базой данных.
-		</blockquote>
+		<div class="tab">
+			<b>save(Object entity)</b> Переводит Entity в Persistent state.<br>
+			<b>update(Object entity)</b> Обновляет существующий объект в базе данных.<br>
+			<b>saveOrUpdate(Object entity)</b> Если объект имеет ID, то он обновляется, в противном случае - сохраняется.<br>
+			<b>T get(Class<T> entityClass, Serializable id)</b> Загружает объект по его идентификатору. Или null<br>
+			<b>T load(Class<T> entityClass, Serializable id)</b> Lazy get<br>
+			<b>delete(Object entity)</b> Удаляет объект из базы данных<br>
+			<b>refresh(Object entity)</b> Обновляет объект из базы данных по ID<br>
+			<b>evict(Object entity)</b> Удаляет обьект из persistance context<br>
+			<b>clear()</b> Очищает persistance context<br>
+			<b>boolean isDirty()</b> true если в persistance context есть изменения<br>
+			<b>flush()</b> Принудительно синхронизирует состояние всех persistance объектов с базой данных.
+		</div>
 	</details>
 	<details>
 		<summary><b>HIBERNATE Entity States</b></summary>
-		<img src="../pictures/hibernate_entity_states.png" width="100%">
+		<div class="tab">
+			<img src="../pictures/hibernate_entity_states.png" width="100%">
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>JPA (EntityManager) методы</b></summary>
-		<blockquote>
-		<b>persist(Object entity)</b> Переводит Entity в Persistent state.<br>
-		<b>T merge(T entity)</b> Возвращает объект по ID из базы, или переводит в persistant новый (Работать с возвращённым!).<br>
-		<b>find(Class<T> entityClass, Object primaryKey)</b> Загружает объект по его идентификатору. Или null<br>
-		<b>getReference(Class<T> entityClass, Object primaryKey)</b> Lazy find<br>
-		<b>remove(Object entity)</b> Удаляет объект из базы данных<br>
-		<b>refresh(Object entity)</b> Обновляет объект из базы данных по ID<br>
-		<b>detach(Object entity)</b> Удаляет обьект из persistance context<br>
-		<b>clear()</b> Очищает persistance context<br>
-		<b>boolean isDirty()</b> true если в persistance context есть изменения<br>
-		<b>flush()</b> Принудительно синхронизирует состояние всех persistance объектов с базой данных.
-		</blockquote>
+		<div class="tab">
+			<b>persist(Object entity)</b> Переводит Entity в Persistent state.<br>
+			<b>T merge(T entity)</b> Возвращает объект по ID из базы, или переводит в persistant новый (Работать с возвращённым!).<br>
+			<b>find(Class<T> entityClass, Object primaryKey)</b> Загружает объект по его идентификатору. Или null<br>
+			<b>getReference(Class<T> entityClass, Object primaryKey)</b> Lazy find<br>
+			<b>remove(Object entity)</b> Удаляет объект из базы данных<br>
+			<b>refresh(Object entity)</b> Обновляет объект из базы данных по ID<br>
+			<b>detach(Object entity)</b> Удаляет обьект из persistance context<br>
+			<b>clear()</b> Очищает persistance context<br>
+			<b>boolean isDirty()</b> true если в persistance context есть изменения<br>
+			<b>flush()</b> Принудительно синхронизирует состояние всех persistance объектов с базой данных.
+		</div>
 	</details>
 	<details>
 		<summary><b>JPA Entity States</b></summary>
-		<img src="../pictures/jpa_entity_states.png" width="100%">
+		<div class="tab">
+			<img src="../pictures/jpa_entity_states.png" width="100%">
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>@OneToMany</b></summary>
-		<pre>
-		@Entity
-		@Table(name = "companies")
-		public class Company {
-			@Id
-			@GeneratedValue(strategy = GenerationType.IDENTITY)
-			private Integer id;
-			@OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-			private List<User> users;
-			...
-		}
-		
-		@Entity
-		@Table(name = "users")
-		public class User {
-			@Id
-			@GeneratedValue(strategy = GenerationType.IDENTITY)
-			private Integer id;
-			@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-			@JoinColumn(name = "company_id") // not necessary
-			private Company company;
-			....
-		}
-		</pre>
+		<div class="tab">
+			<pre>
+	@Entity
+	@Table(name = "companies")
+	public class Company {
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Integer id;
+		@OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+		private List<User> users;
+		...
+	}
+	
+	@Entity
+	@Table(name = "users")
+	public class User {
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Integer id;
+		@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+		@JoinColumn(name = "company_id") // not necessary
+		private Company company;
+		....
+	}
+			</pre>
+		</div>
 	</details>
 	<details>
 		<summary><b>CascadeType</b></summary>
-		<blockquote>
-		ALL<br>
-		PERSIST<br>
-		MERGE<br>
-		REMOVE<br>
-		REFRESH<br>
-		DETACH
-		</blockquote>
+		<div class="tab">
+			ALL<br>
+			PERSIST<br>
+			MERGE<br>
+			REMOVE<br>
+			REFRESH<br>
+			DETACH
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>@ManyToMany</b></summary>
-		<pre>
-		@Entity
-		public class User {
-			@ManyToMany(cascade = CascadeType.ALL)
-			@JoinTable(name = "user_chat", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "chat_id"))
-			private List&ltChat&gt chats = new ArrayList&lt&gt();
-			...
-		}
-		
-		@Entity
-		public class Chat {
-			@ManyToMany(mappedBy = "chats")
-			private List&ltUser&gt users = new ArrayList&lt&gt();
-		}
-		</pre>
+		<div class="tab">
+			<pre>
+	@Entity
+	public class User {
+		@ManyToMany(cascade = CascadeType.ALL)
+		@JoinTable(name = "user_chat", joinColumns = @JoinColumn(name = "user_id"),
+		inverseJoinColumns = @JoinColumn(name = "chat_id"))
+		private List&ltChat&gt chats = new ArrayList&lt&gt();
+		...
+	}
+	
+	@Entity
+	public class Chat {
+		@ManyToMany(mappedBy = "chats")
+		private List&ltUser&gt users = new ArrayList&lt&gt();
+	}
+			</pre>
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>Сортировка и Маппинг</b></summary>
-		&nbsp&nbsp&nbsp&nbsp <b>1. Сортировка с помощью SQL</b>
-		<pre>
-		@OneToMany(mappedBy = "company")
-		@OrderBy("firstname ASC")
-		private List&ltUser&gt users = new ArrayList<>();
-		</pre>
-		&nbsp&nbsp&nbsp&nbsp <b>2. В столбце user_order будет хранить порядковый номер</b>
-		<pre>
-		@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-		@OrderColumn(name = "user_order")
-		private List&ltUser&gt users = new ArrayList<>();
-		</pre>
-		&nbsp&nbsp&nbsp&nbsp <b>3. В Map</b>
-		<pre>
-		@OneToMany(mappedBy = "company")
-		@MapKey(name = "Id")
-		private Map&ltInteger, User&gt users = new HashMap<>();
-		</pre>
+		<div class="tab">
+			<b>1. Сортировка с помощью SQL</b>
+	<pre>
+	@OneToMany(mappedBy = "company")
+	@OrderBy("firstname ASC")
+	private List&ltUser&gt users = new ArrayList&lt&gt();</pre>
+			<b>2. В столбце user_order будет хранить порядковый номер</b>
+	<pre>
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+	@OrderColumn(name = "user_order")
+	private List&ltUser&gt users = new ArrayList&lt&gt();</pre>
+			<b>3. В Map</b>
+	<pre>
+	@OneToMany(mappedBy = "company")
+	@MapKey(name = "Id")
+	private Map&ltInteger, User&gt users = new HashMap&lt&gt();
+	</pre>
+		</div>
 	</details>
+
 	<br>
 	<details>
 		<summary><b>@MappedSuperclass</b></summary>
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 1. TABLE_PER_CLASS</b></summary>
-		<img src="../pictures/table_per_class.png">
-		<pre>
-		@Entity
-		@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-		public abstract class User {
-			@Id
-			@GeneratedValue(strategy = GenerationType.AUTO)
-			private Long id;
-			private String username;
-			...
-		}
-		
-		@Entity
-		public class Programmer extends User {
-			private String progLanguage;
-			...
-		}
-		
-		@Entity
-		public class Manager extends User {
-			private String projName;
-			...
-		}
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 2. SINGLE_TABLE</b></summary>
-		<img src="../pictures/single_table.png">
-		<pre>
-		@Entity
-		@Table(name = "EMPLOYEE")
-		@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-		@DiscriminatorColumn(name = "EMPLOYEE_TYPE")
-		public abstract class User {
-			@Id
-			@GeneratedValue(strategy = GenerationType.IDENTITY)
-			private Long id;
-			private String username;
-			...
-		}
+		<div class="tab">
+			<details>
+				<summary><b>1. TABLE_PER_CLASS</b></summary>
+				<div class="tab">
+					<img src="../pictures/table_per_class.png">
+	<pre>
+	@Entity
+	@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+	public abstract class User {
+		@Id
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		private Long id;
+		private String username;
+		...
+	}
+	
+	@Entity
+	public class Programmer extends User {
+		private String progLanguage;
+		...
+	}
+	
+	@Entity
+	public class Manager extends User {
+		private String projName;
+		...
+	}</pre>
+				</div>
+				</details>
+				
+				<details>
+				<summary><b>2. SINGLE_TABLE</b></summary>
+				<div class="tab">
+					<img src="../pictures/single_table.png">
+	<pre>
+	@Entity
+	@Table(name = "EMPLOYEE")
+	@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+	@DiscriminatorColumn(name = "EMPLOYEE_TYPE")
+	public abstract class User {
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Long id;
+		private String username;
+		...
+	}
 
-		@Entity
-		@DiscriminatorValue("PROGRAMMER")
-		public class Programmer extends User {
-			private String prog_language;
-			...
-		}
+	@Entity
+	@DiscriminatorValue("PROGRAMMER")
+	public class Programmer extends User {
+		private String prog_language;
+		...
+	}
 
-		@Entity
-		@DiscriminatorValue("MANAGER")
-		public class Manager extends User {
-			private String proj_name;
-			...
-		}
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 3. JOINED</b></summary>
-		<img src="../pictures/joined.png">
-		<pre>
-		@Entity
-		@Table(name = "USER")
-		@Inheritance(strategy = InheritanceType.JOINED)
-		public abstract class User {
-			@Id
-			@GeneratedValue(strategy = GenerationType.IDENTITY)
-			private Long id;
-			private String username;
-			...
-		}
+	@Entity
+	@DiscriminatorValue("MANAGER")
+	public class Manager extends User {
+		private String proj_name;
+		...
+	}</pre>
+				</div>
+				</details>
+				
+				<details>
+				<summary><b>3. JOINED</b></summary>
+				<div class="tab"></div>
+					<img src="../pictures/joined.png">
+	<pre>
+	@Entity
+	@Table(name = "USER")
+	@Inheritance(strategy = InheritanceType.JOINED)
+	public abstract class User {
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Long id;
+		private String username;
+		...
+	}
 
-		@Entity
-		@Table(name = "PROGRAMMER")
-		public class Programmer extends User {
-			private String prog_language;
-			...
-		}
+	@Entity
+	@Table(name = "PROGRAMMER")
+	public class Programmer extends User {
+		private String prog_language;
+		...
+	}
 
-		@Entity
-		@Table(name = "MANAGER")
-		public class Manager extends User {
-			private String proj_name;
-			...
-		}
-		</pre>
-		</details>
+	@Entity
+	@Table(name = "MANAGER")
+	public class Manager extends User {
+		private String proj_name;
+		...
+	}</pre>
+				</div>
+			</details>
+		</div>
 	</details>
+
 	<br>
 	<details>
 		<summary><b>Queries</b></summary>
+		<div class="tab">
 		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 1. Query</b></summary>
-		<pre>
-		List&ltUser&gt users = session.createQuery("select u from User u where lastname = :lastname")
-			.setParameter("lastname", str)
-			.list();
-		</pre>
-		</details>
+				<summary><b>1. Query</b></summary>
+	<pre>
+	List&ltUser&gt users = session.createQuery("select u from User u where lastname = :lastname")
+		.setParameter("lastname", str)
+		.list();</pre>
+				</details>
+				
+				<details>
+				<summary><b>2. NamedQuery</b></summary>
+	<pre>
+	// IN User ROOT!
+	@NamedQuery(name = "FindUserByName",
+		query = "select u from User u where lastname = :lastname")
 		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 2. NamedQuery</b></summary>
-		<pre>
-		// IN User ROOT!
-		@NamedQuery(name = "FindUserByName",
-			query = "select u from User u where lastname = :lastname")
-			
-		// IN OTHER CLASS
-		List&ltUser&gt users = session.createNamedQuery("FindUserByName")
-			.setParameter("lastname", str)
-			.list();
-		</pre>
+	// IN OTHER CLASS
+	List&ltUser&gt users = session.createNamedQuery("FindUserByName")
+		.setParameter("lastname", str)
+		.list();</pre>
+				</details>
+				
+				<details>
+				<summary><b>3. NativeQuery</b></summary>
+	<pre>
+	List&ltUser&gt users = session.createNativeQuery("select * from users where lastname = :lastname", User.class)
+		.setParameter("lastname", str)
+		.list();</pre>
+				</details>
+				
+				<details>
+				<summary><b>4. Update</b></summary>
+	<pre>
+	.executeUpdate();
+	как получить результат?</pre>
 		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 3. NativeQuery</b></summary>
-		<pre>
-		List&ltUser&gt users = session.createNativeQuery("select * from users where lastname = :lastname", User.class)
-			.setParameter("lastname", str)
-			.list();
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 4. Update</b></summary>
-		<pre>
-		.executeUpdate();
-		как получить результат?
-		</pre>
-		</details>
+		</div>
 	</details>
+	
 	<br>
 	<details>
 	<summary><b>N+1 Проблемма</b></summary>

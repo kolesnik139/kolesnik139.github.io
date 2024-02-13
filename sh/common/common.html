@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Общие вопросы</title>
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
     <b>Для какого проекта выбереш монолит, для какого - микросервисы?</b><br>
@@ -13,13 +14,41 @@
     Реляционные преимущество - транзакции<br>
     <b>Как ты учишся? Узнаёш новое?</b><br>
     <br>
-    <b>CODE SMELLS:</b><br>
-    Дублированный код<br>
-    Мёртвый код<br>
-    Длинные методы 10 строк, 1 экран(30 строк) <br>
-    Длинный список параметров > 3<br>
-    Комментарии<br>
-    Ненужные примитивные переменные - ?<br>
-    Сгустки данных<br>
+    <h1>CODE SMELLS:</h1>
+    <div class="tab">
+        Дублированный код<br>
+        Мёртвый код<br>
+        Длинные методы 10 строк, 1 экран(30 строк) <br>
+        Длинный список параметров > 3<br>
+        Комментарии<br>
+        Ненужные примитивные переменные - ?<br>
+        Сгустки данных
+    </div>
+    <br>
+    <h1>OAuth 2.0</h1> — протокол АВТОРИЗАЦИИ, позволяющий выдать одному сервису (приложению) права на доступ к ресурсам пользователя на другом сервисе<br>
+    <div class="tab">
+        <b>0. Разработчик регистрирует приложение</b> (Клиент) в Google Console (Сервис) и получает Client Id и Client Secret<br>
+        <b>1. Клиент формирует GET запрос на Сервис</b><br>
+        <div class="tab">
+            client_id<br>
+            redirect_url<br>
+            scope - список разрешений<br>
+            response_type=code<br>
+            state - UNIQUE_RANDOM_STRING
+        </div>
+            <b>2. При переходе по ссылке открывается окно Сервиса,</b> Владелец логинится и соглашается предоставить права<br>
+            <b>3. Сервис перенаправляет ответ</b> на redirect_url и в параметре передаёт AUTHORIZATION_CODE и возвращает state<br>
+            <b>4. Клиент отправляет POST запрос</b><br>
+            <div class="tab">
+            client_id<br>
+            client_secret<br>
+            redirect_uri<br>
+            code=AUTHORIZATION_CODE<br>
+            grant_type=authorization_code<br>
+        </div>
+        <b>и получает Access Token и Refresh Token</b>
+    </div>
+    <br>
+
 </body>
 </html>

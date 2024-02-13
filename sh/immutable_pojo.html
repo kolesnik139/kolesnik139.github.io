@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Immutable Types, Pojo</title>
+    <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
-    <b>Immutable Types</b><br>
-    <blockquote><b>1. String:</b> Все операции над строками создают новые строки.<br>
-    <b>2. Integer, Long, Short, Byte, Character, Double, Float, и т. д.:</b> Оболочки для примитивных типов неизменяемы.<br>
-    <b>3. BigInteger и BigDecimal</b><br>
-    <b>4. LocalDate, LocalTime, LocalDateTime, Instant:</b> Классы из пакета java.time<br>
-    <b>5. Collections.unmodifiableXXX():</b> C помощью методов Collections.unmodifiableXXX() создаётся Immutable обёртка<br>
-    <b>6. Enum:</b> Типы-перечисления<br>
-    <b>7. java.lang.StackTraceElement</b><br></blockquote>
+    <h1>Immutable Types</h1>
+    <div class="tab">
+        <b>1. String:</b> Все операции над строками создают новые строки.<br>
+        <b>2. Integer, Long, Short, Byte, Character, Double, Float, и т. д.:</b> Оболочки для примитивных типов неизменяемы.<br>
+        <b>3. BigInteger и BigDecimal</b><br>
+        <b>4. LocalDate, LocalTime, LocalDateTime, Instant:</b> Классы из пакета java.time<br>
+        <b>5. Collections.unmodifiableXXX():</b> C помощью методов Collections.unmodifiableXXX() создаётся Immutable обёртка<br>
+        <b>6. Enum:</b> Типы-перечисления<br>
+        <b>7. java.lang.StackTraceElement</b><br>
+    </div>
     <br>
-    <b>Immutable POJO</b><br>
+    <h1>Immutable POJO</h1>
     <pre>
     public class Human {
         private final String firstName;
