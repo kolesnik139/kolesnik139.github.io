@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLS/SSL</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <h1>TLS (Transport Layer Security) и SSL (Secure Sockets Layer)</h1>
+    <br>
+    <h1>Confidentiality (Приватность)</h1>
+    <b>Гибридное шифрование:</b><br>
+    Ассиметричное для обмена ключами.<br>
+    Симетричное для данных.<br>
+    <div class="tab">
+        <b>1. RSA</b> Уязвимый, не обеспечивает совкершенную прямую секретность (Perfect forward security)<br>
+            <div class="tab">
+            <b>Клиент</b> hello --&gt <b>Сервер</b><br>
+            &lt-- Открытый ключ<br>
+            Ключ симетричного шифрования, зашифрованный открытым ключём --&gt<br>
+        </div>
+        <br>
+        <b>2. Diffie-Hellman</b><br>
+        <div class="tab">
+            <table>
+                <tr><td><b>Клиент</b></td><td></td><td><b>Сервер</b></td></tr>
+                <tr><td>key = <span class="red">5</span></td><td>p(простое) = <span class="green">29</span>, g = <span class="green">3</span></td><td>key = <span class="red">8</span></td></tr>
+                <tr>
+                    <td><span class="green">3</span><sup><span class="red">5</span></sup> % <span class="green">29</span> = <span class="green">11</span></td>
+                    <td><span class="green">11</span> --&gt </td>
+                    <td><span class="green">11</span><sup><span class="red">8</span></sup> % <span class="green">29</span> = <span class="red"><u>16</u></span></td>
+                </tr>
+                <tr>
+                    <td><span class="green">7</span><sup><span class="red">5</span></sup> % <span class="green">29</span> = <span class="red"><u>16</u></span></td>
+                    <td> &lt-- <span class="green">7</span></td>
+                    <td><span class="green">3</span><sup><span class="red">8</span></sup> % <span class="green">29</span> = <span class="green">7</span></td>
+                </tr>
+            </table>
+        </div>
+        <b>Современный вариант на элиптических кривых</b>
+    </div>
+    <br>
+
+    <h1>Integrity (Целостность)</h1>
+    <div class="tab">
+        <b>MAC:</b> Message Authentication Code<br>
+        После данных идёт MAC<br>
+        Хэш на основе данных и общего ключа.
+    </div>
+    <br>
+
+    <h1>Authentication</h1>
+    <div class="tab">
+        <b>Инфраструктура открытых ключей</b><br>
+        <b>Сетрификат - содержит Открытый ключ</b><br>
+        Сертификаты TLS/SSL подписаны Удостоверяющим Центром (Certificate Authority) и проверяются открытым общедоступным сертификатом УЦ<br>
+        Сообщения подписаны закрытым ключём сервера и проверяются TLS/SSL сертификатом
+    </div>
+
+    <br>
+    <div class="hor-divider"></div>
+    <br>
+
+    <h1>Алгоритмы <span class="red">А</span>симетричного шифрования</h1>
+    <div class="tab">
+        <b>RSA:</b> Rivest Shamir Adleman (устарело)<br>
+        <b>DSA:</b> Digital Signature Algorithm<br>
+        <b>DSS:</b> Digital Signature Standard<br>
+        <b>Diffie-Hellman</b>
+    </div>
+    <br>
+
+    <h1>Алгоритмы симетричного шифрования</h1>
+    <div class="tab">
+        <b>AES:</b> Advanced Encrypting Standard<br>
+        <b>3DES:</b> Triple Data Encripting Algorithm<br>
+        <b>RC4, RC5, RC6: </b> Rivest cipher
+    </div>
+    <br>
+
+    <h1>Криптографические хэш функции</h1>
+    <div class="tab">
+        <b>MD5:</b> Message Digest 5 (устарело)<br>
+        <b>SHA-1, 224, 256, 384, 512:</b> Secure Hash Algiritm<br>
+    </div>
+    <br>
+
+
+
+</body>
+</html>
