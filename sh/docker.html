@@ -5,21 +5,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Docker</title>
 	<link rel="stylesheet" href="./css/main.css">
-	<style>
-		span {
-			color: red;
-		}
-	</style>
 </head>
 <body>
-	<b>docker <span>version</span></b> : показать версию<br><br>
+	<b>docker <span class="red">version</span></b> : показать версию<br><br>
 	
-	<b>docker <span>ps</span> -a</b> : показать контейнеры<br>
+	<b>docker <span class="red">ps</span> -a</b> : показать контейнеры<br>
 	<b>-a</b> и остановленные<br><br>
 	
-	<b>docker <span>images</span></b> : показать локальные образы<br><br>
+	<b>docker <span class="red">images</span></b> : показать локальные образы<br><br>
 	
-	<b>docker <span>run</span> -it -d -p 8080:80 -v ${PWD}:/usr/share/nginx/htmll --name --rm my_nginx nginx</b><br> : создаёт (скачивает образ если нет) и запускает контейнер<br>
+	<b>docker <span class="red">run</span> -it -d -p 8080:80 -v ${PWD}:/usr/share/nginx/htmll --name --rm my_nginx nginx</b><br> : создаёт (скачивает образ если нет) и запускает контейнер<br>
 	<b>-it</b>: интерактивный терминал<br>
 	<b>-d</b>: в фоновом режимие detached<br>
 	<b>-p 8080:80</b> : публиковать порт внешний:контейнера<br>
@@ -28,32 +23,32 @@
 	<b>--rm</b> : удалить как остановится<br>
 	<b>nginx</b>: название образа<br><br>
 	
-	<b>docker <span>exec</span> cont_name bash</b> : выполнить команду в запущенном контейнере<br>
+	<b>docker <span class="red">exec</span> cont_name bash</b> : выполнить команду в запущенном контейнере<br>
 	<b>cont_name</b> : имя или id контейнера<br>
 	<b>bash</b> : название процесса<br><br>
 	
-	<b>docker <span>container prune</span></b> : удалить все остановленные контейнеры<br><br>
+	<b>docker <span class="red">container prune</span></b> : удалить все остановленные контейнеры<br><br>
 	
-	<b>docker <span>container inspect</span> cont_name | grep IPAddress</b> : выдать информацию о контейнере<br>
+	<b>docker <span class="red">container inspect</span> cont_name | grep IPAddress</b> : выдать информацию о контейнере<br>
 	<b>cont_name</b> : имя или id контейнера<br>
 	<b>grep</b> : фильтровать по полю<br><br>
 	
-	<b>docker <span>stop</span> cont_name cont_name2</b> : остановить контейнер<br>
+	<b>docker <span class="red">stop</span> cont_name cont_name2</b> : остановить контейнер<br>
 	<b>cont_name</b> : имя или id контейнера<br><br>
 	
-	<b>docker <span>build</span> . -t my-calendar:4.1.3</b> : создать образ<br>
+	<b>docker <span class="red">build</span> . -t my-calendar:4.1.3</b> : создать образ<br>
 	<b>.</b> : путь к Dockerfile<br>
 	<b>-t my-calendar:4.1.3</b> : добавить имя:тэг(версия)<br><br>
 	
-	<b><span>\</span></b> : перенос строки<br><br>
+	<b><span class="red">\</span></b> : перенос строки<br><br>
 	
-	<b><span>Dockerfile :</span></b><br>
+	<b><span class="red">Dockerfile :</span></b><br>
 	<b>FROM python:alpine</b>  имя базового образа : тэг(версия) базового образа<br>
 	<b>WORKDIR /app</b><br>
 	<b>COPY . .</b>  локаольная папка, папка в контейнере <br>
 	<b>CMD ["python", "main.py"]</b><br><br>
 	
-	<b><span>docker-compose.yml</span></b> : Декларативный. Пробелы важны<br>
+	<b><span class="red">docker-compose.yml</span></b> : Декларативный. Пробелы важны<br>
 	<b><pre>version: '3'
 services:
   app:

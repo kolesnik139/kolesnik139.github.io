@@ -338,180 +338,189 @@
 	<br>
 	<details>
 	<summary><b>N+1 Проблемма</b></summary>
-	&nbsp&nbsp&nbsp&nbsp Для каждой компании вызовется отделный запрос, что-бы достать Юзеров
+	<div class="tab">
+		Для каждой компании вызовется отделный запрос, что-бы достать Юзеров
+		<pre>
+	List<Company> companies = session.createQuery("Select c from Company c").list();
+	for(Company company : companies){
+		company.getUsers();
+	}</pre>
+		<b> Способы решения:</b><br>
+		<div class="tab">
+			<details>
+			<summary><b>1. join fetch</b></summary>
 	<pre>
-		List<Company> companies = session.createQuery("Select c from Company c").list();
-		for(Company company : companies){
-			company.getUsers();
-		}
+	Select c from Company c LEFT JOIN FETCH c.users
+	// Сформирует запрос с left join
 	</pre>
-	&nbsp&nbsp&nbsp&nbsp<b> Способы решения:</b><br>
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 1. join fetch</b></summary>
-		<pre>
-		Select c from Company c LEFT JOIN FETCH c.users
-		// Сформирует запрос с left join
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 2. @BatchSize(size = 10)</b></summary>
-		<pre>
-		// Аннотация для ПОЛЯ users
-		// Добавит запрос/ы: select &ltполя&gt from users where company_id in (?,?,?,?,?,?,?,?,?,?)
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 3. @FetchProfile</b></summary>
-		<pre>
-		// Для того чтобы достать определённые SubEntity.
-		// Аннотация для КЛАССА Company
-		@FetchProfile(name = "withCompany", fetchOverrides = {
-			@FetchProfile.FetchOverride(entity = Company.class, association = "users", mode = FetchMode.JOIN)
-		})
-		
-		session.enableFetchProfile("withCompany");
-		//Действие с базой
-		session.disableFetchProfile("withCompany");
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 4. EntityGraph</b></summary>
-		<pre>
-		// Для того чтобы достать определённые SubEntity и SubSubEntity и т.д.
-		// Аннотация для КЛАССА Company
-		@NamedEntityGraph(name = "withCompany", attributeNodes = {
-			@NamedAttributeNode("users")
-		})
-		
-		//Для find
-		RootGraph&ltCompany&gt companyGraph = session.createEntityGraph(Company.class);
-		companyGraph.addAttributeNodes("users");
-		Map&ltString, Object&gt properties = Map.of(
-			GraphSemantic.LOAD.getJakartaHintName(), companyGraph
-		);
-		Company company = session.find(Company.class, 1, properties);
-		
-		//Для Query
-		List<Company> companies = session.createQuery("Select c from Company c")
-			.setHint(GraphSemantic.LOAD.getJakartaHintName(), companyGraph)
-			.list();
-		
-		</pre>
-		</details>
+			</details>
+			<details>
+			<summary><b>2. @BatchSize(size = 10)</b></summary>
+			<pre>
+	// Аннотация для ПОЛЯ users
+	// Добавит запрос/ы: select &ltполя&gt from users where company_id in (?,?,?,?,?,?,?,?,?,?)</pre>
+			</details>			
+			<details>
+			<summary><b>3. @FetchProfile</b></summary>
+			<pre>
+	// Для того чтобы достать определённые SubEntity.
+	// Аннотация для КЛАССА Company
+	@FetchProfile(name = "withCompany", fetchOverrides = {
+		@FetchProfile.FetchOverride(entity = Company.class, association = "users", mode = FetchMode.JOIN)
+	})
+	
+	session.enableFetchProfile("withCompany");
+	//Действие с базой
+	session.disableFetchProfile("withCompany");</pre>
+			</details>
+			
+			<details>
+			<summary><b>4. EntityGraph</b></summary>
+			<pre>
+	// Для того чтобы достать определённые SubEntity и SubSubEntity и т.д.
+	// Аннотация для КЛАССА Company
+	@NamedEntityGraph(name = "withCompany", attributeNodes = {
+		@NamedAttributeNode("users")
+	})
+	
+	//Для find
+	RootGraph&ltCompany&gt companyGraph = session.createEntityGraph(Company.class);
+	companyGraph.addAttributeNodes("users");
+	Map&ltString, Object&gt properties = Map.of(
+		GraphSemantic.LOAD.getJakartaHintName(), companyGraph
+	);
+	Company company = session.find(Company.class, 1, properties);
+	
+	//Для Query
+	List<Company> companies = session.createQuery("Select c from Company c")
+		.setHint(GraphSemantic.LOAD.getJakartaHintName(), companyGraph)
+		.list();</pre>
+			</details>
+		</div>
+	</div>
 	</details>
 	<br>
+
 	<details>
 		<summary><b>Бдокировки Locking</b></summary>
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp @OptimisticLocking</b></summary>
-		<b>&nbsp&nbsp&nbsp&nbsp На уровне приложения</b>
-		<pre>
-		@Entity
-		@OptimisticLocking(type = OptimisticLockType.VERSION)
-		public class MyEntity {
-			@Version
-			private Integer version;
-			...
-		}
-		
-		MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.OPTIMISTIC);
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp PESSIMISTIC</b></summary>
-		<b>&nbsp&nbsp&nbsp&nbsp На уровне БД</b>
-		<pre>
-		MyEntity myEntity1 = session1.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_READ);
-		// Add to SQL: FOR SHARE
-		
-		MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_WRITE);
-		// Add to SQL: FOR UPDATE
-		
-		MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
-		// Add to SQL: FOR UPDATE NOWAIT
-		</pre>
-		</details>
+		<div class="tab">
+			<details>
+			<summary><b>@OptimisticLocking</b></summary>
+			<div class="tab">
+				<b>На уровне приложения</b>
+				<pre>
+	@Entity
+	@OptimisticLocking(type = OptimisticLockType.VERSION)
+	public class MyEntity {
+		@Version
+		private Integer version;
+		...
+	}
+	
+	MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.OPTIMISTIC);</pre>
+			</div>
+			</details>
+			
+			<details>
+			<summary><b>PESSIMISTIC</b></summary>
+			<div class="tab">
+				<b>На уровне БД</b>
+				<pre>
+	MyEntity myEntity1 = session1.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_READ);
+	// Add to SQL: FOR SHARE
+	
+	MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_WRITE);
+	// Add to SQL: FOR UPDATE
+	
+	MyEntity myEntity = session.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+	// Add to SQL: FOR UPDATE NOWAIT</pre>
+			</div>
+			</details>
+		</div>
 	</details>
 	<br>
+
 	<details>
 		<summary><b>ReadOnly Mode</b></summary>
-		<b>&nbsp&nbsp&nbsp&nbsp Не сохраняет изменения, но читает быстрее</b>
-		<pre>
-		@Transactional(readOnly = true)
-		
-		session.setReadOnly(entity, true);
-		
-		session.setDefaultReadOnly(true);
-		
-		</pre>
-		</details>
+		<div class="tab">
+			<b>Не сохраняет изменения, но читает быстрее</b>
+			<pre>
+	@Transactional(readOnly = true)
+	session.setReadOnly(entity, true);
+	session.setDefaultReadOnly(true);</pre>
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>Callback</b></summary>
-		<b>&nbsp&nbsp&nbsp&nbsp Анотированные методы в Entity</b>
-		<pre>
-		@PrePersist
-		@PostPersist
-		@PreRemove
-		@PostRemove
-		@PreUpdate
-		@PostUpdate
-		@PostLoad
-		</pre>
-		&nbsp&nbsp&nbsp&nbsp Есть ешё интерсепторы
-		</details>
+		<div class="tab">
+			<b>Анотированные методы в Entity</b>
+			<pre>
+	@PrePersist
+	@PostPersist
+	@PreRemove
+	@PostRemove
+	@PreUpdate
+	@PostUpdate
+	@PostLoad</pre>
+			Есть ешё интерсепторы
+		</div>
 	</details>
 	<br>
+
 	<details>
 		<summary><b>@Audited</b></summary>
-		&nbsp&nbsp&nbsp&nbsp 1. В Pom.xml добавить зависимость Hibernate ENVERS<br>
-		&nbsp&nbsp&nbsp&nbsp 2. Анотировать Ентити @Audited. Не аудируемые поля отметить @NotAudited<br>
-		&nbsp&nbsp&nbsp&nbsp 3. Создать таблицу ENTITIES_AUD со всеми полями +<br>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Integer REV: Это идентификатор записи аудита. 0, 1, 2, ...<br>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Integer REVTYPE: Тип ревизии: 0-ADD, 1-MOD, 2-DEL<br>
-		&nbsp&nbsp&nbsp&nbsp 4. Создать таблицу REVINFO с полями:<br>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Integer REV<br>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp - Timestamp REVTSTMP
+		<div class="tab">
+			1. В Pom.xml добавить зависимость Hibernate ENVERS<br>
+			2. Анотировать Ентити @Audited. Не аудируемые поля отметить @NotAudited<br>
+			3. Создать таблицу ENTITIES_AUD со всеми полями +<br>
+			<div class="tab">
+				- Integer REV: Это идентификатор записи аудита. 0, 1, 2, ...<br>
+				- Integer REVTYPE: Тип ревизии: 0-ADD, 1-MOD, 2-DEL<br>
+			</div>
+			4. Создать таблицу REVINFO с полями:<br>
+			<div class="tab">
+				- Integer REV<br>
+				- Timestamp REVTSTMP
+			</div>
+		</div>
 	</details>
 	<br>
 	<details>
 		<summary><b>JpaRepository</b></summary>
-		<pre>
-		@NoRepositoryBean
-		public interface JpaRepository<T, ID> extends ListCrudRepository<T, ID>, ListPagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {...}
+		<div class="tab">
+			<pre>
+	@NoRepositoryBean
+	public interface JpaRepository<T, ID> extends ListCrudRepository<T, ID>, ListPagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> {...}
 
-
-		public interface UserRepository extends JpaRepository<User, Long> {
+	public interface UserRepository extends JpaRepository<User, Long> {
+	
+		//Предоставляет методы по умолчанию
+		S save(S entity);
+		Optional<T> findById(ID id)
+		boolean existsById(ID id)
+		List<T> findAll()
+		long count()
+		void deleteById(ID id)
+		...
+	
+		List<User> findByUsername(String username); //Реализует по имени!
+		List<User> findByUsernameLike(String username);
+		List<User> findByUsernameEndingWith(String username);
+	
+		@Query("SELECT u FROM User u WHERE u.firstname = ?1")
+		List<User> findByFirstName(String firstName);
 		
-			//Предоставляет методы по умолчанию
-			S save(S entity);
-			Optional<T> findById(ID id)
-			boolean existsById(ID id)
-			List<T> findAll()
-			long count()
-			void deleteById(ID id)
-			...
-		
-			List<User> findByUsername(String username); //Реализует по имени!
-			List<User> findByUsernameLike(String username);
-			List<User> findByUsernameEndingWith(String username);
-		
-			@Query("SELECT u FROM User u WHERE u.firstname = ?1")
-			List<User> findByFirstName(String firstName);
-			
-			@Query(value = "SELECT * FROM users WHERE firstname = ?1", nativeQuery = true)
-			List<User> findByFirstNameUsingSQL(String firstName);
-		}
-		</pre>
-		&nbsp&nbsp&nbsp&nbsp <b>Чтобы добавить кастомную реализацию:</b><br>
-		&nbsp&nbsp&nbsp&nbsp 1. Добавляем интерфейс с нужными методами<br>
-		&nbsp&nbsp&nbsp&nbsp 2. Реализуем этот интерфейс и методы<br>
-		&nbsp&nbsp&nbsp&nbsp 3. public interface UserRepository extends JpaRepository&ltUser, Long&gt, ЭтотИнтерфейс {...}<br>
+		@Query(value = "SELECT * FROM users WHERE firstname = ?1", nativeQuery = true)
+		List<User> findByFirstNameUsingSQL(String firstName);
+	}</pre>
+			<b>Чтобы добавить кастомную реализацию:</b><br>
+			1. Добавляем интерфейс с нужными методами<br>
+			2. Реализуем этот интерфейс и методы<br>
+			3. public interface UserRepository extends JpaRepository&ltUser, Long&gt, ЭтотИнтерфейс {...}<br>
+		</div>
 		</details>
 	</details>
+	<br>
 </body>
 </html>

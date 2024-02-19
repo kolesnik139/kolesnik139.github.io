@@ -10,332 +10,338 @@
 	<b>Application Context</b> Представляет собой Spring Container. Можно создать несколько<br>
 	<details>
 		<summary><b>Способы создания Application Context</b></summary>
-		&nbsp&nbsp&nbsp&nbsp1. Spring Boot создаёт: ApplicationContext context = SpringApplication.run(App.class, args);<br>
-		&nbsp&nbsp&nbsp&nbsp2. new ClassPathXmlApplicationContext(...)<br>
-		&nbsp&nbsp&nbsp&nbsp3. new AnnotationConfigApplicationContext(...) и другие способы.
+		<div class="tab">
+			1. Spring Boot создаёт: ApplicationContext context = SpringApplication.run(App.class, args);<br>
+			2. new ClassPathXmlApplicationContext(...)<br>
+			3. new AnnotationConfigApplicationContext(...) и другие способы.
+		</div>
 	</details>
 	<br>
+
 	<details>
 		<summary><b>Способы ДОБАВЛЕНИЯ бина в Application Context</b></summary>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp1. XML конфигурация</b></summary>
-		<pre>
-		&ltbean id="someBean" class="com.example.SomeBean"/&gt
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp2. Java конфигурация</b></summary>
-		<pre>
-		@Configuration
-		public class AppConfig {
-
-			@Bean
-			public Engine engine() {
-				return new Engine();
-			}
-
-			@Bean
-			public Car car() {
-				return new Car(engine());  // Здесь внедряем бин engine через конструктор
-			}
+		<div class="tab">
+			<details>
+			<summary><b>1. XML конфигурация</b></summary>
+			<pre>
+	&ltbean id="someBean" class="com.example.SomeBean"/&gt</pre>
+			</details>
 			
-			@Bean
-			public Car car1() {
-				Car car = new Car();
-				car.setEngine(engine());  // Через сеттер
-				return car;
-			}
+			<details>
+			<summary><b>2. Java конфигурация</b></summary>
+			<pre>
+	@Configuration
+	public class AppConfig {
+
+		@Bean
+		public Engine engine() {
+			return new Engine();
 		}
-		</pre>
-		</details>
 
-		&nbsp&nbsp&nbsp&nbsp3. С помощью аннотаций @Component, @Service, @Repository и @Controller<br>
+		@Bean
+		public Car car() {
+			return new Car(engine());  // Здесь внедряем бин engine через конструктор
+		}
 		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp4. Регистрация вручную через BeanDefinitionRegistry API (В уже поднятый контейнер)</b></summary>
-		<pre>
-		ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) context;
+		@Bean
+		public Car car1() {
+			Car car = new Car();
+			car.setEngine(engine());  // Через сеттер
+			return car;
+		}
+	}</pre>
+			</details>
 
-		BeanDefinitionRegistry beanDefinitionRegistry = (BeanDefinitionRegistry) configurableApplicationContext.getBeanFactory();
+			3. С помощью аннотаций @Component, @Service, @Repository и @Controller<br>
+			
+			<details>
+			<summary><b>4. Регистрация вручную через BeanDefinitionRegistry API (В уже поднятый контейнер)</b></summary>
+			<pre>
+	ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) context;
 
-		GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
-		beanDefinition.setBeanClass(DynamicBean.class);
-		beanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
+	BeanDefinitionRegistry beanDefinitionRegistry = (BeanDefinitionRegistry) configurableApplicationContext.getBeanFactory();
 
-		beanDefinitionRegistry.registerBeanDefinition("dynamicBean", beanDefinition);
-		</pre>
-		</details>
-		&nbsp&nbsp&nbsp&nbsp5. Через FactoryBean 
+	GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
+	beanDefinition.setBeanClass(DynamicBean.class);
+	beanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
+
+	beanDefinitionRegistry.registerBeanDefinition("dynamicBean", beanDefinition);</pre>
+			</details>
+			5. Через FactoryBean
+		</div>
 	</details>
 	<br>
 
 	<details>
 		<summary><b>Способы ПОЛУЧИТЬ БИН из Application Context</b></summary>
-
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp1. context.getBean()</b></summary>
-		<pre>
-		Pet pet = context.getBean("myPet"); //по имени
-		Pet pet = context.getBean(Pet.class); // по типу
-		Pet pet = context.getBean("myPet", Pet.class); //по имени и типу (нужную имплементацию)
-		Pet pet = context.getBean("myPet", arg1, arg2...); //с аргументами конструктора
-		Pet pet = context.getBean(Pet.class, arg1, arg2...); // --//--
-		Map&ltString, MyInterfaceType&gt beans = context.getBeansOfType(MyInterfaceType.class);// бины определённого типа
-		String[] beanNames = context.getBeanNamesForType(MyType.class); // имена бинов определённого типа
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp2. @Autowired</b></summary>
-		&nbsp&nbsp&nbsp&nbsp Применяется к Полю, Сеттеру и Конструктору<br>
-		&nbsp&nbsp&nbsp&nbsp @Inject и @Resource не являются частью ядра Spring Framework<br>
-		&nbsp&nbsp&nbsp&nbsp @Lazy для ленивой инициализации<br>
-		&nbsp&nbsp&nbsp&nbsp В случае нескольких наследников или имплементаций: Отметить один из них @Primary <br>
-		&nbsp&nbsp&nbsp&nbsp или Применить @Qualifier:
-		<pre>
-		@Autowired //ОТМЕЧАЕТ КАКОЙ КОНСТРУКТОР ИСПОЛЬЗОВАТЬ ПРИ СОЗДАНИИ БИНА
-		public MyComponent(@Qualifier("serviceA") MyService myService) {// В КОНСТРУКТОРЕ
-			this.myService = myService;
-		}
-
-		@Autowired
-		@Qualifier("serviceA") // В ПОЛЕ И СЕТТЕРЕ
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp3. Через BeanFactory)</b></summary>
-		<pre>
-		BeanFactory beanFactory = context.getAutowireCapableBeanFactory();
-		SomeBean someBean = beanFactory.getBean(SomeBean.class);
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp4. С помощью Java конфигурации</b></summary>
-		<pre>
-		@Configuration
-		public class AppConfig {
-
-			@Bean
-			public Engine engine() {
-				return new Engine();
-			}
-
-			@Bean
-			public Car car() {
-				return new Car(engine());  // Здесь внедряем бин engine через конструктор
-			}
+		<div class="tab">
+			<details>
+			<summary><b>1. context.getBean()</b></summary>
+			<pre>
+	Pet pet = context.getBean("myPet"); //по имени
+	Pet pet = context.getBean(Pet.class); // по типу
+	Pet pet = context.getBean("myPet", Pet.class); //по имени и типу (нужную имплементацию)
+	Pet pet = context.getBean("myPet", arg1, arg2...); //с аргументами конструктора
+	Pet pet = context.getBean(Pet.class, arg1, arg2...); // --//--
+	Map&ltString, MyInterfaceType&gt beans = context.getBeansOfType(MyInterfaceType.class);// бины определённого типа
+	String[] beanNames = context.getBeanNamesForType(MyType.class); // имена бинов определённого типа</pre>
+			</details>
 			
-			@Bean
-			public Car car1() {
-				Car car = new Car();
-				car.setEngine(engine());  // Через сеттер
-				return car;
-			}
-		}
-		</pre>
-		</details>
-		&nbsp&nbsp&nbsp&nbsp5. С помощью XML конфигурация<br>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp6. С помощью @Lookup</b></summary>
-		&nbsp&nbsp&nbsp&nbsp Для создания экземпляров прототипа<br>
-		&nbsp&nbsp&nbsp&nbsp В случае Синглтона возвращает один и тот жа экземпляр и не имеет смысла<br>
-		&nbsp&nbsp&nbsp&nbsp Неявно создаёт наследника. Поэтому можно инжектить!<br>
-		<pre>
-		@Component
-		public abstract class SingletonBean {
-			@Lookup
-			public abstract Prot getPrototypeBean();
+			<details>
+			<summary><b>2. @Autowired</b></summary>
+			<div class="tab">
+				Применяется к Полю, Сеттеру и Конструктору<br>
+				@Inject и @Resource не являются частью ядра Spring Framework<br>
+				@Lazy для ленивой инициализации<br>
+				В случае нескольких наследников или имплементаций: Отметить один из них @Primary <br>
+				или Применить @Qualifier:
+				<pre>
+	@Autowired //ОТМЕЧАЕТ КАКОЙ КОНСТРУКТОР ИСПОЛЬЗОВАТЬ ПРИ СОЗДАНИИ БИНА
+	public MyComponent(@Qualifier("serviceA") MyService myService) {// В КОНСТРУКТОРЕ
+		this.myService = myService;
+	}
 
-			public void process() {
-				for(int i=0; i<10; i++) {
-					Prot prototypeBean = getPrototypeBean();
-					prototypeBean.doSomething();
-				}
+	@Autowired
+	@Qualifier("serviceA") // В ПОЛЕ И СЕТТЕРЕ</pre>
+			</div>
+			</details>
+			
+			<details>
+			<summary><b>3. Через BeanFactory</b></summary>
+	<pre>
+	BeanFactory beanFactory = context.getAutowireCapableBeanFactory();
+	SomeBean someBean = beanFactory.getBean(SomeBean.class);</pre>
+			</details>
+			
+			<details>
+			<summary><b>4. С помощью Java конфигурации</b></summary>
+			<pre>
+	@Configuration
+	public class AppConfig {
+
+		@Bean
+		public Engine engine() {
+			return new Engine();
+		}
+
+		@Bean
+		public Car car() {
+			return new Car(engine());  // Здесь внедряем бин engine через конструктор
+		}
+		
+		@Bean
+		public Car car1() {
+			Car car = new Car();
+			car.setEngine(engine());  // Через сеттер
+			return car;
+		}
+	}</pre>
+			</details>
+
+			5. С помощью XML конфигурация<br>
+			
+			<details>
+			<summary><b>6. С помощью @Lookup</b></summary>
+			<div class="tab">
+				Для создания экземпляров прототипа<br>
+				В случае Синглтона возвращает один и тот жа экземпляр и не имеет смысла<br>
+				Неявно создаёт наследника. Поэтому можно инжектить!<br>
+				<pre>
+	@Component
+	public abstract class SingletonBean {
+		@Lookup
+		public abstract Prot getPrototypeBean();
+
+		public void process() {
+			for(int i=0; i&lt;10; i++) {
+				Prot prototypeBean = getPrototypeBean();
+				prototypeBean.doSomething();
 			}
 		}
-		</pre>
-		</details>
+	}</pre>
+			</div>
+			</details>
+		</div>
 
 	</details>
 	<br>
+
 	<b>Singlton должен быть stateless</b>
 	<br>
+	
 	<br>
 	<details>
 		<summary><b>Жизненный цикл бина (singleton)</b></summary>
-		&nbsp&nbsp&nbsp&nbspНачало работы Spring Container<br>
-		&nbsp&nbsp&nbsp&nbspСоздание бина<br>
-		&nbsp&nbsp&nbsp&nbspinit-method<br>
-		&nbsp&nbsp&nbsp&nbspDI - Внедряются зависимости<br>
-		&nbsp&nbsp&nbsp&nbspИспользование бина<br>
-		&nbsp&nbsp&nbsp&nbspdestroy-method<br>
-		&nbsp&nbsp&nbsp&nbspуничтожение бина<br>
-		&nbsp&nbsp&nbsp&nbspКонец работы Spring Container<br>
+		<div class="tab">
+			Начало работы Spring Container<br>
+			Создание бина<br>
+			Init-method<br>
+			DI - Внедряются зависимости<br>
+			Использование бина<br>
+			Destroy-method<br>
+			Уничтожение бина<br>
+			Конец работы Spring Container<br>
+		</div>
 	</details>
 
 	<br>
 	<details>
 		<summary><b>Вызов INIT-method DESTROY-method:</b></summary>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp1. Java configuration)</b></summary>
-		<pre>
-		@Configuration
-		public class AppConfig {
+		<div class="tab">
+			<details>
+			<summary><b>1. Java configuration</b></summary>
+			<pre>
+	@Configuration
+	public class AppConfig {
 
-			@Bean(initMethod = "init", destroyMethod = "cleanup")
-			public MyBean myBean() {
-				return new MyBean();
-			}
+		@Bean(initMethod = "init", destroyMethod = "cleanup")
+		public MyBean myBean() {
+			return new MyBean();
 		}
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp2. XML config)</b></summary>
-		<pre>
-		&ltbean id="myDog" class="...Dog" init-method="init" destroy-method="destroy"/&gt
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp3. Annotations)</b></summary>
-		<pre>
-		@PostConstruct
-		public void init(){...}
+	}</pre>
+			</details>
+			
+			<details>
+			<summary><b>2. XML config</b></summary>
+			<pre>
+	&ltbean id="myDog" class="...Dog" init-method="init" destroy-method="destroy"/&gt</pre>
+			</details>
+			
+			<details>
+			<summary><b>3. Annotations</b></summary>
+			<pre>
+	@PostConstruct
+	public void init(){...}
 
-		@PreDestroy
-		public void destroy(){...}
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp4. Реализацией интерфейсов)</b></summary>
-		<pre>
-		@Component
-		public class MyBean implements InitializingBean, DisposableBean {
-			@Override
-			public void afterPropertiesSet() throws Exception {...}
+	@PreDestroy
+	public void destroy(){...}</pre>
+			</details>
+			
+			<details>
+			<summary><b>4. Реализацией интерфейсов</b></summary>
+			<pre>
+	@Component
+	public class MyBean implements InitializingBean, DisposableBean {
+		@Override
+		public void afterPropertiesSet() throws Exception {...}
 
-			@Override
-			public void destroy() throws Exception {...}
-		}
-		</pre>
-		</details>
+		@Override
+		public void destroy() throws Exception {...}
+	}</pre>
+			</details>
+		</div>
 	</details>
 	<br>
 
 	<details>
 		<summary><b>Как достать значение PROPERTY</b></summary>
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 0. Добавить свой *.PROPERTY)</b></summary>
-		<pre>
-		@Configuration
-		@PropertySource("classpath:my.properties")
-		public class Config {....}
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 1. Аннотация @Value)</b></summary>
-		<pre>
-		@Value("${app.message:defaultValue}")
+		<div class="tab">
+			<details>
+			<summary><b>0. Добавить свой *.PROPERTY</b></summary>
+			<pre>
+	@Configuration
+	@PropertySource("classpath:my.properties")
+	public class Config {....}</pre>
+			</details>
+			
+			<details>
+			<summary><b>1. Аннотация @Value</b></summary>
+			<pre>
+	@Value("${app.message:defaultValue}")
+	private String message;</pre>
+			</details>
+			
+			<details>
+			<summary><b>2. Конфигурационные классы @ConfigurationProperties</b></summary>
+			<pre>
+	@Component
+	@ConfigurationProperties(prefix = "app")
+	public class AppProperties {
 		private String message;
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 2. Конфигурационные классы @ConfigurationProperties)</b></summary>
-		<pre>
-		@Component
-		@ConfigurationProperties(prefix = "app")
-		public class AppProperties {
-			private String message;
-			private int num;
+		private int num;
 
-			public String getMessage() {
-				return message;
-			}
-
-			public void setMessage(String message) { //Сеттеры нужны!
-				this.message = message;
-			}
-
-			public int getNum() {
-				return num;
-			}
-
-			public void setNum(int num) { //Сеттеры нужны!
-				this.num = num;
-			}
+		public String getMessage() {
+			return message;
 		}
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 3. Среда выполнения Environment)</b></summary>
-		<pre>
-		@Autowired
-		private Environment env;
-		
-		String message = env.getProperty("app.message");
-		</pre>
-		</details>
-		
-		<details>
-		<summary><b>&nbsp&nbsp&nbsp&nbsp 4. MessageSource для переводов)</b></summary>
-		<pre>
-		// messages_en.properties
-		
-		@Autowired
-		private MessageSource messageSource;
-		
-		String message = messageSource.getMessage("my.mes", null, Locale.getDefault());
-		</pre>
-		</details>
-		
-		
-		
 
+		public void setMessage(String message) { //Сеттеры нужны!
+			this.message = message;
+		}
+
+		public int getNum() {
+			return num;
+		}
+
+		public void setNum(int num) { //Сеттеры нужны!
+			this.num = num;
+		}
+	}</pre>
+			</details>
+			
+			<details>
+			<summary><b>3. Среда выполнения Environment</b></summary>
+			<pre>
+	@Autowired
+	private Environment env;
+	
+	String message = env.getProperty("app.message");</pre>
+			</details>
+			
+			<details>
+			<summary><b>4. MessageSource для переводов</b></summary>
+			<pre>
+	// messages_en.properties
+	
+	@Autowired
+	private MessageSource messageSource;
+	
+	String message = messageSource.getMessage("my.mes", null, Locale.getDefault());</pre>
+			</details>
+		</div>
 	</details>
 	<br>
+
 	<details>
 		<summary><b>Как работать с ТРАНЗАКЦИЯМИ</b></summary>
-		&nbsp&nbsp&nbsp&nbsp1. @Transactional<br>
-		&nbsp&nbsp&nbsp&nbsp2. XML Configuration<br>
-		&nbsp&nbsp&nbsp&nbsp3. Вручную управлять транзакциями <pre>
-		private PlatformTransactionManager transactionManager;
-		ransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-		transactionManager.commit(status);
-		transactionManager.rollback(status);</pre>
+		<div class="tab">
+			@Transactional<br>
+			2. XML Configuration<br>
+			3. Вручную управлять транзакциями
+			<pre>
+	private PlatformTransactionManager transactionManager;
+	ransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+	transactionManager.commit(status);
+	transactionManager.rollback(status);</pre>
+		</div>
 	</details>
 	<br>
+
 	<b> Транзакции откатываются в случае НЕпроверяемых исключений</b><br>
 	<br>
 
 	<details>
 		<summary><b>Параметры @Transactional</b></summary>
-		&nbsp&nbsp&nbsp&nbsp @Transactional реализована с помощью AOP
-		<blockquote><b>1. Propagation</b><br>
-			REQUIRED (По умолчанию): Если нет активной транзакции, создается новая. Если есть - работает в старой.<br>
-			REQUIRES_NEW: Создает новую транзакцию независимо от наличия активной. Если активная транзакция существует, она будет приостановлена до завершения новой.<br>
-			SUPPORTS: Метод будет выполняться в рамках активной транзакции, если она есть. Если нет активной транзакции, метод будет выполняться без транзакции.<br>
-			NOT_SUPPORTED: Метод будет выполняться без транзакции, даже если есть активная.<br>
-			MANDATORY: Метод требует наличия активной транзакции. Если ее нет, будет выбрасываться исключение.<br>
-			NEVER: Метод требует отсутствия активной транзакции. Если она есть, будет выбрасываться исключение.<br>
-			NESTED: Создает вложенную транзакцию. Вложенная транзакция является частью родительской транзакции, но может быть откатывана независимо от родительской. Если нет активной транзакции, создается новая.<br>
-			NESTED (With Savepoint): Аналогично Propagation.NESTED, но также устанавливает точку сохранения, которая позволяет откатывать только часть транзакции.<br>
-		<b><a href=TransactionIsolation.html>2. Isolation</a></b><br>
-		<b>3. ReadOnly</b><br>
-		<b>4. Timeout</b><br>
-		<b>5. RollbackFor:</b> Указывает классы исключений, при которых должен выполняться откат.<br>
-		<b>6. NoRollbackFor:</b> --//-- НЕ должен выполняться откат<br>
-		<b>...</b><br></blockquote>
+		<div class="tab">
+			@Transactional реализована с помощью AOP<br>
+			<b>1. Propagation</b><br>
+			<div class="tab">
+				<b>REQUIRED:</b> (По умолчанию): Если нет активной транзакции, создается новая. Если есть - работает в старой.<br>
+				<b>REQUIRES_NEW:</b> Создает новую транзакцию независимо от наличия активной. Если активная транзакция существует, она будет приостановлена до завершения новой.<br>
+				<b>SUPPORTS:</b> Метод будет выполняться в рамках активной транзакции, если она есть. Если нет активной транзакции, метод будет выполняться без транзакции.<br>
+				<b>NOT_SUPPORTED:</b> Метод будет выполняться без транзакции, даже если есть активная.<br>
+				<b>MANDATORY:</b> Метод требует наличия активной транзакции. Если ее нет, будет выбрасываться исключение.<br>
+				<b>NEVER:</b> Метод требует отсутствия активной транзакции. Если она есть, будет выбрасываться исключение.<br>
+				<b>NESTED:</b> Создает вложенную транзакцию. Вложенная транзакция является частью родительской транзакции, но может быть откатывана независимо от родительской. Если нет активной транзакции, создается новая.<br>
+				<b>NESTED</b> (With Savepoint): Аналогично Propagation.NESTED, но также устанавливает точку сохранения, которая позволяет откатывать только часть транзакции.<br>
+			</div>
+			<b><a href=transaction_isolation.html>2. Isolation</a></b><br>
+			<b>3. ReadOnly</b><br>
+			<b>4. Timeout</b><br>
+			<b>5. RollbackFor:</b> Указывает классы исключений, при которых должен выполняться откат.<br>
+			<b>6. NoRollbackFor:</b> --//-- НЕ должен выполняться откат<br>
+			<b>...</b><br>
+			
+		</div>
 	</details>
 	<br>
 	<b>Servlet Container: Tomcat, Jetty</b><br>
@@ -344,34 +350,34 @@
 	<details>
 		<summary><b>Filters code</b></summary>
 		<pre>
-		@Configuration
-		public class FilterConfig {
+	@Configuration
+	public class FilterConfig {
 
-			@Bean
-			public FilterRegistrationBean<RequestTimingFilter> loggingFilter() {
-				FilterRegistrationBean<RequestTimingFilter> registrationBean = new FilterRegistrationBean<>();
+		@Bean
+		public FilterRegistrationBean<RequestTimingFilter> loggingFilter() {
+			FilterRegistrationBean<RequestTimingFilter> registrationBean = new FilterRegistrationBean<>();
 
-				registrationBean.setFilter(new RequestTimingFilter());
-				registrationBean.addUrlPatterns("/api/*");
+			registrationBean.setFilter(new RequestTimingFilter());
+			registrationBean.addUrlPatterns("/api/*");
 
-				return registrationBean;
-			}
+			return registrationBean;
+		}
+	}
+
+	public class RequestTimingFilter implements Filter {
+		@Override
+		public void init(FilterConfig filterConfig) throws ServletException {}
+
+		@Override
+		public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)throws IOException, ServletException {
+			// pre 
+			chain.doFilter(request, response); // 2. Передача запроса и ответа дальше по цепочке обработки
+			// post
 		}
 
-		public class RequestTimingFilter implements Filter {
-			@Override
-			public void init(FilterConfig filterConfig) throws ServletException {}
-
-			@Override
-			public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)throws IOException, ServletException {
-				// pre 
-				chain.doFilter(request, response); // 2. Передача запроса и ответа дальше по цепочке обработки
-				// post
-			}
-
-			@Override
-			public void destroy() {}
-		}</pre>
+		@Override
+		public void destroy() {}
+	}</pre>
 	</details>
 	<br>
 	<b>Dispatcher Servlet</b><br>
@@ -381,132 +387,136 @@
 	<details>
 		<summary><b>Interceptors code</b></summary>
 		<pre>
-		@Configuration
-		public class WebMvcConfig implements WebMvcConfigurer {
+	@Configuration
+	public class WebMvcConfig implements WebMvcConfigurer {
 
-			@Autowired
-			private CustomInterceptor customInterceptor;
+		@Autowired
+		private CustomInterceptor customInterceptor;
 
-			@Override
-			public void addInterceptors(InterceptorRegistry registry) {
-				registry.addInterceptor(customInterceptor);
-			}
+		@Override
+		public void addInterceptors(InterceptorRegistry registry) {
+			registry.addInterceptor(customInterceptor);
 		}
-		
-		@Component
-		public class CustomInterceptor implements HandlerInterceptor {
-			@Override
-			public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-					throws Exception {
-				System.out.println("preHandle method is Calling");
-				return true;
-			}
-
-			@Override
-			public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-					ModelAndView modelAndView) throws Exception {
-				System.out.println("postHandle method is Calling");
-			}
-
-			@Override
-			public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-					throws Exception {
-				System.out.println("afterCompletion method is Calling");
-			}
+	}
+	
+	@Component
+	public class CustomInterceptor implements HandlerInterceptor {
+		@Override
+		public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+				throws Exception {
+			System.out.println("preHandle method is Calling");
+			return true;
 		}
-		</pre>
+
+		@Override
+		public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+				ModelAndView modelAndView) throws Exception {
+			System.out.println("postHandle method is Calling");
+		}
+
+		@Override
+		public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+				throws Exception {
+			System.out.println("afterCompletion method is Calling");
+		}
+	}</pre>
 	</details>
 	<br>
 	<details>
 		<summary><b>Spring BOOT</b></summary>
-		<details>
-		<summary>&nbsp&nbsp&nbsp&nbsp <b>1. Автоконфигурация</b> Основана на условных аннотациях:</summary>
-		<blockquote>
-			<b>@ConditionalOnClass и @ConditionalOnMissingClass:</b> доступен/нет в classpath.<br>
-			<b>@ConditionalOnBean и @ConditionalOnMissingBean:</b> бины уже определены в контексте<br>
-			<b>@ConditionalOnProperty:</b> проперти имеет определённое значение<br>
-			<b>@ConditionalOnResource:</b> ресурс доступен в classpath.<br>
-			<b>@ConditionalOnWebApplication и @ConditionalOnNotWebApplication:</b> веб-приложение<br>
-			<b>@ConditionalOnExpression:</b> выражение SpEL (Spring Expression Language)<br>
-			<b>@ConditionalOnJava:</b> соответствующая версия Java<br>
-			<b>@Conditional(ConditionalImpl.class):</b> (из Spring Framework) класс имплементирующий Condition<br>
-		</blockquote>
-		</details>
-		
-		<details>
-		<summary>&nbsp&nbsp&nbsp&nbsp <b>2. Стартеры</b></summary>
-		<blockquote>
-			<b>spring-boot-starter-web</b> Веб-приложения с использованием Spring MVC.<br>
-			<b>spring-boot-starter-data-jpa</b> Для интеграции с JPA через Hibernate.<br>
-			<b>spring-boot-starter-data-mongodb</b> Для работы с MongoDB.<br>
-			<b>spring-boot-starter-security</b> Для интеграции Spring Security.<br>
-			<b>spring-boot-starter-actuator</b> Для мониторинга и управления вашим приложением в runtime.<br>
-			<b>spring-boot-starter-thymeleaf</b> Для работы с Thymeleaf.<br>
-			<b>spring-boot-starter-cache</b> выражение SpEL (Spring Expression Language)<br>
-			<b>spring-boot-starter-amqp</b> Для работы с Advanced Message Queuing Protocol (AMQP), например, RabbitMQ<br>
-			<b>spring-boot-starter-data-kafka</b> Kafka<br>
-			<b>spring-boot-starter-test</b>  Включает библиотеки JUnit, Mockito, ...<br>
-			<br>
-			<b>Как создать стартер:</b><br>
-			1. Создать Spring Boot проект без main.<br>
-			2. Вместо @Component использовать Java конфигурацию.<br>
-			3. Путь к конфигурации прописать в resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports<br>
-			Раньше в в resources/META-INF/spring.factories
-		</blockquote>
-		
-		</details>
-		
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <b>3. Embedded web servers</b> Tomcat, Jetty: для самодостаточных приложений, которые запускаются из JAR или WAR файла: java -jar имя_файла.jar
+		<div class="tab">
+			<details>
+			<summary><b>1. Автоконфигурация</b> Основана на условных аннотациях:</summary>
+			<div class="tab">
+				<b>@ConditionalOnClass и @ConditionalOnMissingClass:</b> доступен/нет в classpath.<br>
+				<b>@ConditionalOnBean и @ConditionalOnMissingBean:</b> бины уже определены в контексте<br>
+				<b>@ConditionalOnProperty:</b> проперти имеет определённое значение<br>
+				<b>@ConditionalOnResource:</b> ресурс доступен в classpath.<br>
+				<b>@ConditionalOnWebApplication и @ConditionalOnNotWebApplication:</b> веб-приложение<br>
+				<b>@ConditionalOnExpression:</b> выражение SpEL (Spring Expression Language)<br>
+				<b>@ConditionalOnJava:</b> соответствующая версия Java<br>
+				<b>@Conditional(ConditionalImpl.class):</b> (из Spring Framework) класс имплементирующий Condition<br>
+			</div>
+			</details>
+			
+			<details>
+			<summary><b>2. Стартеры</b></summary>
+			<div class="tab">
+				<b>spring-boot-starter-web</b> Веб-приложения с использованием Spring MVC.<br>
+				<b>spring-boot-starter-data-jpa</b> Для интеграции с JPA через Hibernate.<br>
+				<b>spring-boot-starter-data-mongodb</b> Для работы с MongoDB.<br>
+				<b>spring-boot-starter-security</b> Для интеграции Spring Security.<br>
+				<b>spring-boot-starter-actuator</b> Для мониторинга и управления вашим приложением в runtime.<br>
+				<b>spring-boot-starter-thymeleaf</b> Для работы с Thymeleaf.<br>
+				<b>spring-boot-starter-cache</b> выражение SpEL (Spring Expression Language)<br>
+				<b>spring-boot-starter-amqp</b> Для работы с Advanced Message Queuing Protocol (AMQP), например, RabbitMQ<br>
+				<b>spring-boot-starter-data-kafka</b> Kafka<br>
+				<b>spring-boot-starter-test</b>  Включает библиотеки JUnit, Mockito, ...<br>
+				<br>
+				<b>Как создать стартер:</b><br>
+				1. Создать Spring Boot проект без main.<br>
+				2. Вместо @Component использовать Java конфигурацию.<br>
+				3. Путь к конфигурации прописать в resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports<br>
+				Раньше в в resources/META-INF/spring.factories
+			</div>
+			</details>
+			
+			<b>3. Embedded web servers</b> Tomcat, Jetty: для самодостаточных приложений, которые запускаются из JAR или WAR файла: java -jar имя_файла.jar
 
-		<details>
-		<summary>&nbsp&nbsp&nbsp&nbsp <b>4. Production-ready features</b> Встроенные функции:</summary>
-		<blockquote>
-			<b>1. Мониторинг (Actuator):</b> Предоставляет endpoints для мониторинга состояния и поведения приложения.<br>
-			<b>2. Внешние конфигурации:</b> Возможность конфигурировать приложение без необходимости изменения кода.<br>
-			<b>3. Логгирование:</b> Логгирование с возможностью дополнительной конфигурации.<br>
-			<b>4. Безопасность:</b> Механизмы безопасности для аутентификации, авторизации и других аспектов.<br>
-			<b>5. Диагностика:</b> Инструменты для обнаружения и решения проблем в рабочем приложении.
-		</blockquote>
-		</details>
-		
+			<details>
+			<summary><b>4. Production-ready features</b> Встроенные функции:</summary>
+			<div class="tab">
+				<b>1. Мониторинг (Actuator):</b> Предоставляет endpoints для мониторинга состояния и поведения приложения.<br>
+				<b>2. Внешние конфигурации:</b> Возможность конфигурировать приложение без необходимости изменения кода.<br>
+				<b>3. Логгирование:</b> Логгирование с возможностью дополнительной конфигурации.<br>
+				<b>4. Безопасность:</b> Механизмы безопасности для аутентификации, авторизации и других аспектов.<br>
+				<b>5. Диагностика:</b> Инструменты для обнаружения и решения проблем в рабочем приложении.
+			</div>
+			</details>
+		</div>
 	</details>
 	<br>
+
 	<details>
 		<summary><b>СХЕМА</b></summary>
 		<img src="pictures/spring.png" width="100%">
 	</details>
 	<br>
+
 	<details>
 		<summary><b>AOP</b></summary>
-		<pre>
-		public class Pointcuts {		
-			@Pointcut("execution(* com.package.BookService.add*(..))")
-			public void allAddMethods() {}
-		}
-		</pre>
-		<b>&nbsp&nbsp&nbsp&nbsp Типы советов advice</b><br>
-		&nbsp&nbsp&nbsp&nbsp 1. @Before<br>
-		&nbsp&nbsp&nbsp&nbsp 2. @After<br>
-		&nbsp&nbsp&nbsp&nbsp 3. @AfterReturning<br>
-		&nbsp&nbsp&nbsp&nbsp 4. @AfterThrowing<br>
-		&nbsp&nbsp&nbsp&nbsp 5. @Around функциональность всех предыдущих
-		<pre>
-		public class MyAspect {
-			@Around("Pointcuts.allAddMethods()")
-			public void aroundAddingAdvice(ProceedingJoinPoint joinPoint){
-				MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-				if (methodSignature.getName().equals("addBook")){
-					Object[] arguments = joinPoint.getArgs();
-					for (arg innstanceof Book){
-						Book book = (Book) arg;
-						log.info("Добавляем книгу с названием {}", book.getTitle());
-					}
+		<div class="tab">
+			<pre>
+	public class Pointcuts {		
+		@Pointcut("execution(* com.package.BookService.add*(..))")
+		public void allAddMethods() {}
+	}</pre>
+			<b>Типы советов advice</b><br>
+			<div class="tab">
+				1. @Before<br>
+				2. @After<br>
+				3. @AfterReturning<br>
+				4. @AfterThrowing<br>
+				5. @Around функциональность всех предыдущих
+			</div>
+			<pre>
+	public class MyAspect {
+		@Around("Pointcuts.allAddMethods()")
+		public void aroundAddingAdvice(ProceedingJoinPoint joinPoint){
+			MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+			if (methodSignature.getName().equals("addBook")){
+				Object[] arguments = joinPoint.getArgs();
+				for (arg innstanceof Book){
+					Book book = (Book) arg;
+					log.info("Добавляем книгу с названием {}", book.getTitle());
 				}
-				result = joinPoint.proceed(); // выполняем исходный метод
-				return result;
 			}
+			result = joinPoint.proceed(); // выполняем исходный метод
+			return result;
 		}
-		</pre>
+	}</pre>
+		</div>
 	</details>
+	<br>
 </body>
 </html>
