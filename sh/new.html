@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Общие вопросы</title>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <h1>Java 8</h1>
+    <h1>Java 9</h1>
+    <div class="tab">
+        <b>Коллекции</b><br>
+        <div class="tab">
+            Collection.removeIf(Predicate&lt? super E&gt filter) <br>
+            List.replaceAll(UnaryOperator&ltE&gt operator) <br>
+            List.sort(Comparator&lt? super E&gt c) <br>
+            Set.of(E... elements) <br>
+            Map.ofEntries(Map.Entry&lt? extends K, ? extends V&gt... entries) <br>
+            Map.forEach(BiConsumer&lt? super K, ? super V&gt action) <br>
+        </div>
+    </div>
+
+    <h1>Java 10</h1>
+    <div class="tab">
+        <b>Локальные переменные типа (var)</b>
+    </div>
+
+    <h1>Java 12</h1>
+    <div class="tab">
+        <b>Switch</b>
+    </div>
+
+    <h1>Java 13</h1>
+    <div class="tab">
+        <b>Текстовые блоки """ </b> не надо экранировать кавычки, перенос строки, backslash, таб <br>
+    </div>
+
+    <h1>Java 14</h1>
+    <div class="tab">
+        <b>Records</b> НЕИЗМЕНЯЕМЫЙ тип data классов <br>
+    <pre>
+    public record Person(String name, int age) {
+        // Не надо явно определять
+        // конструктор, методы доступа, equals(), hashCode(), toString()
+    }</pre>
+    </div>
+    
+    <h1>Java 17</h1>
+    <div class="tab">
+        <b>sealed</b> указывает каакие классы могут наследовать или имплементировать данный <br>
+    <pre>
+    public sealed class Animal permits Dog, Cat {
+        // Dog, Cat могут наследовать Animal
+    }</pre>
+    </div>
+
+    <h1>Java 21</h1>
+    <div class="tab">
+        <b>switch</b><br>
+        <div class="tab">
+            <b>case null:</b> можно писать <br>
+            <b>case "y" -> System.out.println("You are welcome");</b> стрелочная нотация <br>
+            <b>return yield</b>
+            <pre>
+    return switch(answer){
+        case "y":
+            System.out.println("You are welcome");
+            yield  true;
+    };</pre>
+        <b>Поддержка шаблонов</b>
+            <pre>
+    switch(answer){ // answer is Object
+        case String s:
+            System.out.println("It is a String");
+            break;
+        case Integer i:
+            System.out.println("It is an Integer");
+            break;
+        default:
+            System.out.println("Unknown");
+            break;
+    }</pre>
+        </div>
+
+        <br>
+        <b>Record Patterns</b><br>
+        <pre>
+    record Pair&ltS, T&gt(S a, T b){ }
+
+    Object obj = new Pair&lt&gt("String value", 555);
+    if(obj instanceof Pair(String v1, Integer v2)){
+        System.out.println(v1);
+        System.out.println(v2);
+    }
+        </pre>
+        <br>
+
+        <b>Виртуальные потоки</b><br>
+        <br>
+        
+        <b>Sequenced Collections</b>
+        <pre>
+    interface SequencedCollection&ltE&gt extends Collection&ltE&gt {
+        // new method
+        SequencedCollection&ltE&gt reversed();
+        // methods promoted from Deque
+        void addFirst(E);
+        void addLast(E);
+        E getFirst();
+        E getLast();
+        E removeFirst();
+        E removeLast();
+    }
+
+    interface SequencedSet&ltE&gt extends Set&ltE&gt, SequencedCollection&ltE&gt {
+        SequencedSet&ltE&gt reversed();    // covariant override
+    }
+
+    interface SequencedMap&ltK,V&gt extends Map&ltK,V&gt {
+        // new methods
+        SequencedMap&ltK,V&gt reversed();
+        SequencedSet&ltK&gt sequencedKeySet();
+        SequencedCollection&ltV&gt sequencedValues();
+        SequencedSet&ltEntry&ltK,V&gt&gt sequencedEntrySet();
+        V putFirst(K, V);
+        V putLast(K, V);
+        // methods promoted from NavigableMap
+        Entry&ltK, V&gt firstEntry();
+        Entry&ltK, V&gt lastEntry();
+        Entry&ltK, V&gt pollFirstEntry();
+        Entry&ltK, V&gt pollLastEntry();
+    }</pre>
+    <br>
+
+    <b>String Templates (Preview!)</b> также можно написать собственный процессор
+    <pre>
+    String name = "Duke";
+    System.out.println(STR."Hello, \{name}");</pre>
+    </div>
+
+
+
+</body>
+</html>

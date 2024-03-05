@@ -13,7 +13,8 @@
 		<div class="tab">
 			1. Spring Boot создаёт: ApplicationContext context = SpringApplication.run(App.class, args);<br>
 			2. new ClassPathXmlApplicationContext(...)<br>
-			3. new AnnotationConfigApplicationContext(...) и другие способы.
+			3. new AnnotationConfigApplicationContext(...) и другие способы. <br>
+			<b>ContextRefreshedEvent</b> - когда все бины инициализировались
 		</div>
 	</details>
 	<br>
@@ -52,7 +53,7 @@
 	}</pre>
 			</details>
 
-			3. С помощью аннотаций @Component, @Service, @Repository и @Controller<br>
+			3. С помощью аннотаций <b>@Component, @Service, @Repository</b> (SQLException оборачивает в DataAccessException) и <b>@Controller</b> (обрабатывает HTTP запросы с помощью DispatcherServlet)<br>
 			
 			<details>
 			<summary><b>4. Регистрация вручную через BeanDefinitionRegistry API (В уже поднятый контейнер)</b></summary>
@@ -88,7 +89,14 @@
 			</details>
 			
 			<details>
-			<summary><b>2. @Autowired</b></summary>
+			<summary><b>2. Через BeanFactory</b></summary>
+	<pre>
+	BeanFactory beanFactory = context.getAutowireCapableBeanFactory();
+	SomeBean someBean = beanFactory.getBean(SomeBean.class);</pre>
+			</details>
+
+			<details>
+			<summary><b>3. @Autowired</b></summary>
 			<div class="tab">
 				Применяется к Полю, Сеттеру и Конструктору<br>
 				@Inject и @Resource не являются частью ядра Spring Framework<br>
@@ -104,13 +112,6 @@
 	@Autowired
 	@Qualifier("serviceA") // В ПОЛЕ И СЕТТЕРЕ</pre>
 			</div>
-			</details>
-			
-			<details>
-			<summary><b>3. Через BeanFactory</b></summary>
-	<pre>
-	BeanFactory beanFactory = context.getAutowireCapableBeanFactory();
-	SomeBean someBean = beanFactory.getBean(SomeBean.class);</pre>
 			</details>
 			
 			<details>
@@ -252,7 +253,16 @@
 			</details>
 			
 			<details>
-			<summary><b>2. Конфигурационные классы @ConfigurationProperties</b></summary>
+			<summary><b>2. Среда выполнения Environment</b></summary>
+			<pre>
+	@Autowired
+	private Environment env;
+	
+	String message = env.getProperty("app.message");</pre>
+			</details>
+
+			<details>
+			<summary><b>3. Конфигурационные классы @ConfigurationProperties</b></summary>
 			<pre>
 	@Component
 	@ConfigurationProperties(prefix = "app")
@@ -279,15 +289,6 @@
 			</details>
 			
 			<details>
-			<summary><b>3. Среда выполнения Environment</b></summary>
-			<pre>
-	@Autowired
-	private Environment env;
-	
-	String message = env.getProperty("app.message");</pre>
-			</details>
-			
-			<details>
 			<summary><b>4. MessageSource для переводов</b></summary>
 			<pre>
 	// messages_en.properties
@@ -306,7 +307,8 @@
 		<div class="tab">
 			@Transactional<br>
 			2. XML Configuration<br>
-			3. Вручную управлять транзакциями
+			3. Вручную управлять транзакциями<br>
+			TransactionTemplate, TransactionOperations
 			<pre>
 	private PlatformTransactionManager transactionManager;
 	ransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());

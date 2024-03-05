@@ -12,7 +12,8 @@
     <h1>Основные принципы:</h1>
     <div class="tab">
         <b>Bounded contexts</b> Разграничение контекста - разделение домена на поддомены. Решение определённой подЗадачи. Содержит свою не пересекающуюся с другими Domain Model<br>
-        <b>A part of the software where particular terms, rules and definitions apply consistently</b>
+        <b>A part of the software where particular terms, rules and definitions apply consistently</b><br>
+        <b>Стратегическое планирование</b> - разделение контекста.
         <br>
         <div>
             <img src="../pictures/bounded_context.jpg" alt="Bounded contexts" width="650px">
@@ -30,6 +31,10 @@
             <b>Value Object (immutable!): </b> Строительные блоки доменной модели. Позволяют сделать строгую типизацию. Логику надо спускать в них <br>
             <b>Aggregate</b> Собирательная сущность, единое целое имеет <b>Id</b>. Состоит из VO и Entity. Является границей транзакции. 
             Другие элементы домена не могут ссылаться на внутрености агрегата. Entity может находиться только в одном агрегате. <b>Repository для агрегата (не для Entity)</b> <br>
+            As big as necessary and as small as possible
+            <div class="tab">
+                <b>Root Entity</b> Все изменения агрегата происходят через него
+            </div>
             <div>
                 <img src="../pictures/anem-rich.jpg" alt="Anemic - rich" width="500px">
             </div>

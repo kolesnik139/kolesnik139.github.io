@@ -402,12 +402,14 @@
 	<br>
 
 	<details>
-		<summary><b>Бдокировки Locking</b></summary>
+		<summary><b>Блокировки Locking</b></summary>
 		<div class="tab">
 			<details>
 			<summary><b>@OptimisticLocking</b></summary>
 			<div class="tab">
-				<b>На уровне приложения</b>
+				<b>На уровне приложения</b><br>
+				<b>Идея:</b> конфликты редкие <br>
+				Сначала изменения, при сохранении проверка версии
 				<pre>
 	@Entity
 	@OptimisticLocking(type = OptimisticLockType.VERSION)
@@ -424,7 +426,9 @@
 			<details>
 			<summary><b>PESSIMISTIC</b></summary>
 			<div class="tab">
-				<b>На уровне БД</b>
+				<b>На уровне БД</b><br>
+				<b>Идея:</b> конфликты частые <br>
+				Блокирует ресурсы на уровне базы
 				<pre>
 	MyEntity myEntity1 = session1.find(MyEntity.class, 1, LockModeType.PESSIMISTIC_READ);
 	// Add to SQL: FOR SHARE
