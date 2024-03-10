@@ -1,0 +1,59 @@
+@media (max-width: 1100px) {
+
+    .about-img-container {
+        display: none;
+    }
+
+    .offer-img-container {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+
+	.nav {
+		display: none;
+	}
+
+	.nav-button {
+		display: block;
+	}
+
+    .nav.open {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #3C3F41;
+
+        z-index: 1;
+        padding: 46px 30px;
+
+        display: flex;
+        flex-direction: column;
+        font-size: 24px;
+    }
+
+    .nav.open .phone {
+        display: none;
+    }
+
+    .nav.open .nav-link {
+        font-size: 24px;
+        width: 80%;
+        text-align: center;
+    }
+
+    .nav.open .nav-divider {
+        width: 80%;
+        height: 5px;
+        background-color: #D0D4D8;
+        margin: 0 5px;
+    }
+
+    .nav-button {
+        z-index: 2;
+    }
+
+}

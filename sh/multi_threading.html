@@ -36,11 +36,13 @@
             Поток A захватывает ресурс R1 и ожидает ресурс R2.<br>
             Поток B захватывает ресурс R2 и ожидает ресурс R1.<br>
         </div>
-    <pre>
-    int cores = Runtime.getRuntime().availableProcessors();
-    ExecutorService executor = Executors.newFixedThreadPool(cores);
-    executor.submit(new CallableImpl());</pre>
     </div>
     <br>
+
+    <h1>Создание пула в соответствии с количеством ядер</h1>
+    <pre>
+        int cores = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(cores);
+        executor.submit(new CallableImpl());</pre>
 </body>
 </html>

@@ -1,3 +1,151 @@
-<h1>Andrii Kolesnik</h1>
-<h2>Тут будет моя страничка<h2>
-<p>А пока посмотрите <a href="sh/index.html">шпаргалку</a></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrey Kolesnik Java</title>
+    <link rel="icon" href="./img/java.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/media.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <!-- Header nav -->
+            <div class="header-nav">
+                <img src="./img/java.svg" alt="Java" class="header-logo-img">
+
+                <nav id="nav" class="nav">
+                    <a href="#about" class="nav-link">ПРО МЕНЯ</a>
+                    <span class="nav-divider"></span>
+                    <a href="#offer" class="nav-link">ПРЕДЛОЖЕНИЯ</a>
+                    <span class="nav-divider"></span>
+                    <a href="#articles" class="nav-link">СТАТЬИ</a>
+                    <span class="nav-divider"></span>
+                    <a href="#contacts" class="nav-link">КОНТАКТЫ</a>
+                </nav>
+                <button id="nav-btn" class="nav-button">
+                    <img id="nav-btn-img" src="./img/icons/menu_open.svg" alt="Nav button">
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="image-container">
+            <div class="container">
+                <div class="foto-container">
+                    <img class="foto" src="./img/foto.png" alt="Foto">
+                    <div>
+                        <p class="label-1">Андрей Колесник<br>
+                            Java разработчи<a target="_blank" href="/sh">к</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="about" class="about-container">
+            <div class="container">
+                <p class="chapter-label">Про меня</p>
+                <div class="chapter-divider"></div>
+                <div class="about-content">
+                    <div class="about-text-container">
+                        <p>Меня зовут Андрей Колесник, я уже 20 лет в IT. <br>
+                            За свою довольно долгую карьеру я успел поучавствовать в разработке: <br>
+                            <div class="tab">
+                                - Онлайн RPG игры <br>
+                                - Игр для онлайн казино <br>
+                                - Приложения для чартерной авиокомпании <br>
+                                - Приложения для кассира <br>
+                                - Систему по доставке <br>
+                                - Приложения для налоговой <br>
+                                - И многих других интересных проектов... <br>
+                            </div>
+                            Я использовал технологии:
+                            <div class="tab">
+                                - Java <br>
+                                - Spring <br>
+                                - Hibernate <br>
+                                - REST API <br>
+                                - HTML, CSS, JS <br>
+                                - Microservices <br>
+                                - Kafka <br>
+                                - Docker <br>
+                                - AWS <br>
+                                - И многое другое... <br>
+                            </div>
+                        </p>
+                    </div>
+                    <div class="about-img-container">
+                        <img class="about-img" src="./img/coder.jpg" alt="blocks" data-aos="flip-up">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="offer" class="offer-container">
+            <div class="container">
+                <p class="chapter-label">Предложения</p>
+                <div class="chapter-divider"></div>
+                <div class="offer-content">
+                    <div class="offer-img-container">
+                        <img class="about-img" src="./img/handshake.jpg" alt="blocks" data-aos="flip-up">
+                    </div>
+                    <div class="offer-text-container">
+                        - Работа над постоянным проектом <br>
+                        - Работа freelance <br>
+                        - Услуги репетитора <br>
+                        - Выполнение учебных заданий <br>
+                        - И другие услуги связанные с IT... <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="articles" class="articles-container">
+            <div class="container">
+                <p class="chapter-label">Статьи</p>
+                <div class="chapter-divider"></div>
+                <div class="articles-content" data-aos="flip-up">
+                    <a class="articles-block" href="https://habr.com/ru/articles/342304/" target="_blank">
+                        <img src="./img/articles/a1.jpg" alt="article 1">
+                        <p>Интересные логические задачи<br>на собеседованиях</p>
+                    </a>
+                    <a class="articles-block" href="https://habr.com/ru/articles/342090/" target="_blank">
+                        <img src="./img/articles/a2.gif" alt="article 2">
+                        <p>Вложенные классы<br>в Java</p>
+                    </a>
+                    <a class="articles-block" href="https://habr.com/ru/articles/334848/" target="_blank">
+                        <img src="./img/articles/a3.png" alt="article 3">
+                        <p>Геометрия<br>в компьютерных играх</p>
+                    </a>
+                    <a class="articles-block" href="https://habr.com/ru/articles/330686/" target="_blank">
+                        <img src="./img/articles/a4.jpeg" alt="article 4">
+                        <p>Создание простейшей<br>2D игры на андроид</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="contacts" class="contacts-container">
+            <div class="container">
+                <p class="chapter-label">Контакты</p>
+                <div class="chapter-divider"></div>
+                <div class="contacts-links" data-aos="fade-right">
+                    <p class="contacts-link"><a target="_blank" title="Телеграм" href="https://t.me/andrey_d139"><img class="inline-image" src="./img/contacts/telegram.svg">@andrey_d139</a></p>
+                    <p class="contacts-link"><a target="_blank" title="Вайбер" href="viber://chat?number=+380662849540"><img class="inline-image" src="./img/contacts/viber.svg">+380662849540</a></p>
+                    <p class="contacts-link"><a target="_blank" title="Скайп" href="skype:andrey_d139?chat"><img class="inline-image" src="./img/contacts/skype.svg">andrey_d139</a></p>
+                    <p class="contacts-link"><a target="_blank" title="Электронная почта" href="mailto:kolesnik139@gmail.com"><img class="inline-image" src="./img/contacts/email.svg">kolesnik139@gmail.com</a></p>
+                    <p class="contacts-link"><a target="_blank" title="Телефон" href="tel:+380662849540"><img class="inline-image" src="./img/contacts/phone.svg">+380662849540</a></p>
+                </div>
+            </div>
+        </div>
+	</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
