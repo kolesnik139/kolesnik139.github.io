@@ -218,11 +218,6 @@ body{
     color: #ff5e00;
 }
 
-.contacts-pics-container {
-    display: flex;
-    column-gap: 50px;
-}
-
 .inline-image {
     height: 1em;
     width: auto;
