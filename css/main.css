@@ -133,7 +133,7 @@ body{
 }
 
 .about-container {
-    padding: 100px 0;
+    padding: 50px 0;
     background-color: #2B2B2B;
 }
 
@@ -146,11 +146,10 @@ body{
 
 .about-text-container, .about-img-container {
     flex: 1 1;
-    min-width: 350px;
 }
 
 .offer-container {
-    padding: 100px 0;
+    padding: 50px 0;
     background-color: #323232;
 }
 
@@ -163,11 +162,10 @@ body{
 
 .offer-text-container, .offer-img-container {
     flex: 1 1;
-    min-width: 350px;
 }
 
 .articles-container {
-    padding: 100px 0;
+    padding: 50px 0;
     background-color: #2B2B2B;
 }
 
@@ -205,7 +203,7 @@ body{
 }
 
 .contacts-container {
-    padding: 100px 0;
+    padding: 50px 0;
     background-color: #323232;
 }
 
