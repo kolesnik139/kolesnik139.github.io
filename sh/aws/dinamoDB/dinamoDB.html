@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Архитектура</title>
+	<link rel="stylesheet" href="../../css/main.css">
+</head>
+<body>
+
+	<h1>Key-Value Model</h1>
+	<div class="tab">
+		<b>Atributes</b> похожи на колонки в реляционных базах<br>
+		- Number<br>
+		- String<br>
+		- Boolean<br>
+		- Binary (base64 encoded)<br>
+		- Json (42 levels deep)<br>
+		<b>Partition Key (required)</b><br>
+		<b>Sort Key (optional)</b> хранятся сортированные по этому ключу<br>
+		<b>Primary Key (required) </b> комбинация Sort и Partition key. Должна быть уникальна <br>
+	</div>
+	<br>
+	<h1>Document Model</h1>
+	<div class="tab">
+		<b>Каждый элемент таблицы - Json</b><br>
+	</div>
+	<br>
+	<h1>Автоматически шадрируется</h1>
+	<div class="tab">
+		элементы хранятся в партишинах по хэшу Partition Key<br>
+	</div>
+	<br>
+	<h1>Durability and Availability (for nines)</h1>
+	<div class="tab">
+		Хранит несколько копий элементов в независимых зонах региона<br>
+	</div>
+	<br>
+	<h1>Consistency</h1>
+	<div class="tab">
+		чтение может быть eventually consistent (по умолчанию) или strongly consistent (дороже в два раза)<br>
+	</div>
+	<br>
+	<h1>Операции записи</h1>
+	<div class="tab">
+		<b> - PutItem</b> Записывеет (или перезаписывает) элемент на определённый primary key<br>
+		<b> - UpdateItem</b> Изменяет атрибуты элемента с орпеделённфм primary key<br>
+		<b> - BatchWriteItem</b> Запиывает элементы с определйнными primary ключами<br>
+		<b> - DeleteItem</b> Удаляет элемент с определённым primary key<br>
+	</div>
+	<br>
+	<h1>Операции чтения</h1>
+	<div class="tab">
+		<b> - GetItem</b> по primary key<br>
+		<b> - BatchGetItem</b> по primary ключам<br>
+		<b> - Query</b> пердаём partition key, sort key выражение: equqls, lessThan, beginsWith. Можно возвращать на все поля, добавлять фильтры по другим полям, но нагрузка на базу не изменится<br>
+		<b> - Scan</b> читает всю таблицу<br>
+	</div>
+	<br>
+	<h1>Secondary index для Query по другим полям</h1>
+	<br>
+	<h1>LSI Local secondary index</h1>
+	<div class="tab">
+		Живёт внутри партишина<br>
+		Для поиска элементов внутри указанного Partition key<br>
+	</div>
+	<br>
+	<h1>GSI Global secondary index</h1>
+	<div class="tab">
+		можно создавать и удалять по мере надобности<br>
+		не требует уникольного Primery key<br>
+		Более гибкий<br>
+		Имеет свой Partition key и Sort key<br>
+	</div>
+</body>
+</html>
