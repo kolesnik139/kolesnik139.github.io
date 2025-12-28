@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Randomizer</title>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+    body {
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        text-align: center;
+        margin: 0 0 20px 0;
+    }
+
+    .container {
+        display: flex;
+        gap: 20px;
+        max-width: 900px;
+        height: calc(100% - 80px);
+        margin: 0 auto;
+    }
+
+    .block {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .block label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    textarea {
+        flex: 1;
+        resize: none;
+        padding: 10px;
+        overflow-y: auto;
+		font-family: Arial, sans-serif;
+		font-size: 14px;
+		line-height: 1.4;
+		min-height: calc(5 * 1.4em);
+		-webkit-font-smoothing: antialiased;
+    }
+
+    .history {
+        flex: 1;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        overflow-y: auto;
+		font-family: Arial, sans-serif;
+		line-height: 1.4;
+		min-height: calc(5 * 1.4em);
+    }
+
+    .history-item {
+        margin-bottom: 5px;
+    }
+
+	.history-item.current {
+		font-weight: bold;
+		font-size: 18px;
+	}
+
+	.history-item:not(.current) {
+		font-size: 14px;
+	}
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    button {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+	
+	.textarea-footer {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 4px;
+	}
+	
+	.counter {
+		margin-top: 5px;
+		font-size: 13px;
+		color: #555;}
+
+
+	@media (max-width: 600px) {
+	    body {
+			min-height: 600px
+		}
+		
+		.container {
+			flex-direction: column;
+			height: calc(100% - 80px);
+		}
+
+		.block {
+			flex: 1;
+			min-height: 0;
+		}
+	}
+	
+</style>
+</head>
+<body>
+
+<h1>Randomizer</h1>
+
+<div class="container">
+    <div class="block">
+        <label for="options">Options</label>
+        <textarea id="options" placeholder="Enter options, each on a new line" oninput="updateOptionsCount()"></textarea>
+		<div class="textarea-footer">
+			<span id="optionsCount" class="counter">0</span>
+		</div>
+
+        <div class="buttons">
+            <button onclick="resetAll()">Reset</button>
+            <button onclick="generate()">Generate</button>
+        </div>
+    </div>
+
+    <div class="block">
+        <label>History</label>
+        <div id="history" class="history"></div>
+		<div class="textarea-footer">
+			<span id="historyCount" class="counter">0</span>
+		</div>
+    </div>
+</div>
+
+<script>
+    function generate() {
+		const optionsTextarea = document.getElementById('options');
+        const historyTextarea = document.getElementById('history');
+
+        const options = optionsTextarea.value
+            .split('\n')
+            .map(o => o.trim())
+            .filter(o => o.length > 0);
+
+        if (options.length === 0) {
+            alert('Please enter at least one option');
+            return;
+        }
+
+        const selected = options[Math.floor(Math.random() * options.length)];
+
+        const previousCurrent = historyTextarea.querySelector('.current');
+        if (previousCurrent) {
+            previousCurrent.classList.remove('current');
+        }
+
+        const item = document.createElement('div');
+        item.className = 'history-item current';
+        item.textContent = selected;
+
+        historyTextarea.prepend(item);
+        historyTextarea.scrollTop = 0;
+		
+		incrementHistoryCount();
+    }
+
+    function resetAll() {
+        document.getElementById('options').value = '';
+        document.getElementById('history').innerHTML = '';
+		document.getElementById('historyCount').textContent = 0;
+		updateOptionsCount();
+    }
+	
+	function updateOptionsCount() {
+		const optionsTextarea = document.getElementById('options');
+		const countDiv = document.getElementById('optionsCount');
+		const count = optionsTextarea.value
+			.split('\n')
+			.map(o => o.trim())
+			.filter(o => o.length > 0)
+			.length;
+		countDiv.textContent = count;
+	}
+	
+	function incrementHistoryCount() {
+		const countDiv = document.getElementById('historyCount');
+		countDiv.textContent = Number(countDiv.textContent) + 1;
+	}
+</script>
+
+</body>
+</html>
