@@ -100,7 +100,27 @@
 	.counter {
 		margin-top: 5px;
 		font-size: 13px;
-		color: #555;}
+		color: #555;
+    }
+
+    .options-footer {
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .remove-after {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #555;
+    }
+
+    .remove-after input[type="number"] {
+        width: 50px;
+        padding: 2px 4px;
+        font-size: 13px;
+    }
 
 
 	@media (max-width: 600px) {
@@ -129,9 +149,18 @@
     <div class="block">
         <label for="options">Options</label>
         <textarea id="options" placeholder="Enter options, each on a new line" oninput="updateOptionsCount()"></textarea>
-		<div class="textarea-footer">
-			<span id="optionsCount" class="counter">0</span>
-		</div>
+		<div class="textarea-footer options-footer">
+            <div class="remove-after">
+                <label>
+                    <input type="checkbox" id="removeAfterEnabled">
+                    Remove after
+                </label>
+                <input type="number" id="removeAfterHits" value="3" min="1">
+                hits
+            </div>
+
+            <span id="optionsCount" class="counter">0</span>
+        </div>
 
         <div class="buttons">
             <button onclick="resetAll()">Reset</button>
@@ -149,11 +178,16 @@
 </div>
 
 <script>
+
+    const hitsMap = {};
+
     function generate() {
 		const optionsTextarea = document.getElementById('options');
         const historyTextarea = document.getElementById('history');
+        const removeEnabled = document.getElementById('removeAfterEnabled').checked;
+        const maxHits = Number(document.getElementById('removeAfterHits').value);
 
-        const options = optionsTextarea.value
+        let options = optionsTextarea.value
             .split('\n')
             .map(o => o.trim())
             .filter(o => o.length > 0);
@@ -178,12 +212,26 @@
         historyTextarea.scrollTop = 0;
 		
 		incrementHistoryCount();
+
+        if (removeEnabled && maxHits > 0) {
+            hitsMap[selected] = (hitsMap[selected] || 0) + 1;
+            if (hitsMap[selected] >= maxHits) {
+                options = options.filter(o => o !== selected);
+                optionsTextarea.value = options.join('\n');
+                updateOptionsCount();
+            }
+        }
     }
 
     function resetAll() {
         document.getElementById('options').value = '';
         document.getElementById('history').innerHTML = '';
 		document.getElementById('historyCount').textContent = 0;
+        document.getElementById('removeAfterEnabled').checked = false;
+        document.getElementById('removeAfterHits').value = 3;
+        for (const key in hitsMap) {
+            delete hitsMap[key];
+        }
 		updateOptionsCount();
     }
 	
