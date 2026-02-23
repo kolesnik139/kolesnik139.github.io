@@ -57,32 +57,6 @@
 
     <h1>Java 21</h1>
     <div class="tab">
-        <b>switch</b><br>
-        <div class="tab">
-            <b>case null:</b> можно писать <br>
-            <b>case "y" -> System.out.println("You are welcome");</b> стрелочная нотация <br>
-            <b>return yield</b>
-            <pre>
-    return switch(answer){
-        case "y":
-            System.out.println("You are welcome");
-            yield  true;
-    };</pre>
-        <b>Поддержка шаблонов</b>
-            <pre>
-    switch(answer){ // answer is Object
-        case String s:
-            System.out.println("It is a String");
-            break;
-        case Integer i:
-            System.out.println("It is an Integer");
-            break;
-        default:
-            System.out.println("Unknown");
-            break;
-    }</pre>
-        </div>
-
         <br>
         <b>Record Patterns</b><br>
         <pre>
@@ -97,6 +71,18 @@
         <br>
 
         <b>Виртуальные потоки</b><br>
+        <div class="tab">
+            <b>Обычный поток (Platform Thread)</b><br>
+            Это обёртка над реальным потоком ОС<br>
+            1 Java-поток = 1 поток операционной системы<br>
+            Планируется (scheduler) операционной системой<br>
+            Дорогой по памяти и созданию<br><br>
+            <b>Виртуальный поток (Virtual Thread)</b><br>
+            Не является отдельным потоком ОС<br>
+            Управляется JVM<br>
+            Планируется внутренним scheduler'ом JVM<br>
+            Выполняется поверх небольшого числа реальных потоков<br>
+        </div>
         <br>
         
         <b>Sequenced Collections</b>
@@ -133,11 +119,46 @@
     }</pre>
     <br>
 
-    <b>String Templates (Preview!)</b> также можно написать собственный процессор
+    <h1>Java 25</h1>
+
+    <div class="tab">
+        <b>Compact Source Files (упрощённые файлы без класса)</b><br>
+        <div class="tab">
+        Раньше:
     <pre>
-    String name = "Duke";
-    System.out.println(STR."Hello, \{name}");</pre>
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println("Hello");
+        }
+    }</pre>
+        Сейчас можно вообще без класса, и метод main не статический без параметров:
+    <pre>
+    void main() {
+        System.out.println("Hello");
+    }</pre>
+        </div>
+        <br>
+        <b>Гибкие конструкторы (Flexible Constructor Bodies)</b><br>
+        <div class="tab">В конструкторе теперь можно писать код до вызова super()<br></div>
+        <br>
+        <b>Unnamed Variables — переменные "_"</b><br>
+        <div class="tab">Если значение не нужно, можно использовать _<br></div>
+        <br>
+        <b>Pattern Matching в switch</b><br>
+        <div class="tab">Теперь это полноценный механизм с поддержкой разных типов и улучшенной проверкой.<br>
+        <pre>
+    String describe(Object obj) {
+        return switch (obj) {
+            case Integer i -> "Число " + i;
+            case String s -> "Строка " + s;
+            case null -> "null";
+            default -> "Неизвестно";
+        };
+    }</pre>
+        </div>
+
     </div>
+
 
 
 
